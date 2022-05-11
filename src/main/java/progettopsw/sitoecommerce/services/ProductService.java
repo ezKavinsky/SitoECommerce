@@ -8,7 +8,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import progettopsw.sitoecommerce.entities.Product;
 import progettopsw.sitoecommerce.repositories.ProductRepository;
-
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
