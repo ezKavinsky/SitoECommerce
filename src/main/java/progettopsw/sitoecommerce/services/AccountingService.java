@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import progettopsw.sitoecommerce.entities.User;
 import progettopsw.sitoecommerce.repositories.UserRepository;
-
 import javax.transaction.Transactional;
 import java.util.List;
 
