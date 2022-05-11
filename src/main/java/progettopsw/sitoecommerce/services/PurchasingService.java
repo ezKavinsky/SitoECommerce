@@ -32,7 +32,7 @@ public class PurchasingService {
         for(ProductInPurchase pip : result.getProductsInPurchase()){
             pip.setPurchase(result);
             ProductInPurchase justAdded = productInPurchaseRepository.save(pip);
-            entityManager.refresh(justAdded);
+            entityManager.refresh(justAdded); //l'entityManager ripreleva il prodotto a cui adesso è stato assegnato l'id numerico ed ha tutti i campi aggiornati
             Product product = justAdded.getProduct();
             int newQuantity = justAdded.getQuantity() - pip.getQuantity();
             if (newQuantity < 0) {
