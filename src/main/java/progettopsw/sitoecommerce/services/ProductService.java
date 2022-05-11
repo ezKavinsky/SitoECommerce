@@ -6,9 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import progettopsw.sitoecommerce.entities.Product;
+import progettopsw.sitoecommerce.exceptions.BarCodeAlreadyExistException;
 import progettopsw.sitoecommerce.repositories.ProductRepository;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +19,9 @@ public class ProductService {
     private ProductRepository productRepository;
 
     @Transactional(readOnly = false)
-    public void addProduct(Product product) throws BarCodeAlreadyExistsException{
+    public void addProduct(Product product) throws BarCodeAlreadyExistException {
         if(product.getBarCode() != null && productRepository.existsByBarCode(product.getBarCode())){
-            throw new BarCodeAlreadyExistsException();
+            throw new BarCodeAlreadyExistException();
         }
         productRepository.save(product);
     }//addProduct

@@ -2,16 +2,18 @@ package progettopsw.sitoecommerce.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import progettopsw.sitoecommerce.entities.Product;
 import progettopsw.sitoecommerce.entities.ProductInPurchase;
 import progettopsw.sitoecommerce.entities.Purchase;
 import progettopsw.sitoecommerce.entities.User;
+import progettopsw.sitoecommerce.exceptions.DateWrongRangeException;
+import progettopsw.sitoecommerce.exceptions.QuantityProductUnavailableException;
+import progettopsw.sitoecommerce.exceptions.UserNotFoundException;
 import progettopsw.sitoecommerce.repositories.ProductInPurchaseRepository;
 import progettopsw.sitoecommerce.repositories.PurchaseRepository;
 import progettopsw.sitoecommerce.repositories.UserRepository;
-
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class PurchasingService {
     private EntityManager entityManager;
 
     @Transactional(readOnly = false)
-    public Purchase addPurchase(Purchase purchase) throws QuantityProductUnavailableException{
+    public Purchase addPurchase(Purchase purchase) throws QuantityProductUnavailableException {
         Purchase result = purchaseRepository.save(purchase);
         for(ProductInPurchase pip : result.getProductsInPurchase()){
             pip.setPurchase(result);
@@ -46,7 +48,7 @@ public class PurchasingService {
     }//addPurchase
 
     @Transactional(readOnly = true)
-    public List<Purchase> getPurchaseByUser(User user) throws UserNotFoundException{
+    public List<Purchase> getPurchaseByUser(User user) throws UserNotFoundException {
         if ( !userRepository.existsById(user.getId())){
             throw new UserNotFoundException();
         }

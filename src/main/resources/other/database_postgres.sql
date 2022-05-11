@@ -21,7 +21,7 @@ CREATE TABLE product (
     description VARCHAR(500),
     price FLOAT,
     quantity FLOAT,
-    version LONG
+    version VARCHAR(500)
 );
 
 CREATE SEQUENCE purchase_seq;
