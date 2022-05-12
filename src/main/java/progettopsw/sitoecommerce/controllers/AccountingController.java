@@ -5,7 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import progettopsw.sitoecommerce.entities.User;
-import progettopsw.sitoecommerce.exceptions.MailUserAlreadyExistsException;
+import progettopsw.sitoecommerce.support.ResponseMessage;
+import progettopsw.sitoecommerce.support.exceptions.MailUserAlreadyExistsException;
 import progettopsw.sitoecommerce.services.AccountingService;
 
 import javax.validation.Valid;
@@ -23,7 +24,9 @@ public class AccountingController {
         try{
             User added = accountingService.registerUser(user);
             return new ResponseEntity(added, HttpStatus.OK);
-        }catch(MailUserAlreadyExistsException e){new ResponseMessage("ERROR_MAIL_USER_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST};
+        }catch(MailUserAlreadyExistsException e){
+            return new ResponseEntity(new ResponseMessage("ERROR_MAIL_USER_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping

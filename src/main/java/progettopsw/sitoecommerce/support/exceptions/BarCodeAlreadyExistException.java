@@ -1,4 +1,4 @@
-package progettopsw.sitoecommerce.exceptions;
+package progettopsw.sitoecommerce.support.exceptions;
 
 public class BarCodeAlreadyExistException extends Exception{
 

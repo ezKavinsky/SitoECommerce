@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import progettopsw.sitoecommerce.entities.Product;
-import progettopsw.sitoecommerce.exceptions.BarCodeAlreadyExistException;
+import progettopsw.sitoecommerce.support.exceptions.BarCodeAlreadyExistException;
 import progettopsw.sitoecommerce.repositories.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;

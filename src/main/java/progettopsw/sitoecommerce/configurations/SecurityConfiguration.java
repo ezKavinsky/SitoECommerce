@@ -19,18 +19,18 @@ public class SecurityConfiguration extends WebSecurityConfigureAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception{
         http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, ..antPatterns: "/**").permitAll()
-                .antMatchers( ..antPatterns: "/check/simple").permitAll()
-                .antMatchers( ..antPatterns: "/users/**").permitAll()
-                .antMatchers( ..antPatterns: "/products/**").permitAll()
-                .antMatchers( ..antPatterns: "/purchases/**").permitAll()
-                .anyRequests().authenticate().and().oauth2ResourceServer().jwt().jwtAuthenticationConverter(new JwtAuthenticationConverter());
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers( "/check/simple").permitAll()
+                .antMatchers( "/users/**").permitAll()
+                .antMatchers("/products/**").permitAll()
+                .antMatchers( "/purchases/**").permitAll()
+                .anyRequest().authenticate().and().oauth2ResourceServer().jwt().jwtAuthenticationConverter(new JwtAuthenticationConverter());
     }//configure
 
     @Bean
     public CorsFilter corsFilter(){
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration() configuration = new CorsConfiguration();
+        CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.addAllowedOrigin("*");
         configuration.addAllowedHeader("*");
@@ -38,7 +38,7 @@ public class SecurityConfiguration extends WebSecurityConfigureAdapter{
         configuration.addAllowedMethod("GET");
         configuration.addAllowedMethod("POST");
         configuration.addAllowedMethod("PUT");
-        source.registerCorsConfiguration(path: "/**",configuration);
+        source.registerCorsConfiguration("/**",configuration);
         return new CorsFilter(source);
     }
 
