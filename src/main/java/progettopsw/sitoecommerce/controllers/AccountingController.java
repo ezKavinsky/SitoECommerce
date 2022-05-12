@@ -27,11 +27,11 @@ public class AccountingController {
         }catch(MailUserAlreadyExistsException e){
             return new ResponseEntity(new ResponseMessage("ERROR_MAIL_USER_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST);
         }
-    }
+    }//create
 
     @GetMapping
     public List<User> getAll(){
         return accountingService.getAllUsers();
-    }
+    }//getAll
 
 }//AccountingController
