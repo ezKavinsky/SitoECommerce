@@ -8,6 +8,7 @@ import progettopsw.sitoecommerce.entities.User;
 import progettopsw.sitoecommerce.exceptions.MailUserAlreadyExistsException;
 import progettopsw.sitoecommerce.services.AccountingService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,7 +19,7 @@ public class AccountingController {
     private AccountingService accountingService;
 
     @PostMapping
-    public ResponseEntity create(@RequestBody User user){
+    public ResponseEntity create(@RequestBody @Valid User user){
         try{
             User added = accountingService.registerUser(user);
             return new ResponseEntity(added, HttpStatus.OK);
