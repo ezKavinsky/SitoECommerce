@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 
 @Configuration
-@EnableGlobalMethodSecurty(prePostEnabled = true)
+@EnableGlobalMethodSecurity ty(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigureAdapter{
 
     @Override
