@@ -3,7 +3,6 @@ package progettopsw.sitoecommerce.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
-
 import javax.persistence.*;
 
 @Data
@@ -22,7 +21,7 @@ public class ProductInPurchase {
     private Purchase purchase;
 
     @Basic
-    @Column(name = "quantity", nullable = true)
+    @Column(name = "quantity", nullable = false)
     private int quantity;
 
     @ManyToOne(cascade = CascadeType.MERGE)

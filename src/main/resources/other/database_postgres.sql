@@ -2,7 +2,7 @@ CREATE SCHEMA orders;
 
 CREATE SEQUENCE user_seq;
 
-CREATE TABLE user (
+CREATE TABLE "user" (
     id INTEGER DEFAULT NEXTVAL ('user_seq') PRIMARY KEY,
     code VARCHAR(70),
     first_name VARCHAR(50),
@@ -17,10 +17,15 @@ CREATE SEQUENCE product_seq;
 CREATE TABLE product (
     id INTEGER DEFAULT NEXTVAL ('product_seq') PRIMARY KEY,
     name VARCHAR(50),
+    brand VARCHAR(50),
     bar_code VARCHAR(70),
     description VARCHAR(500),
     price FLOAT,
     quantity FLOAT,
+    production_year INTEGER,
+    inPromo BOOLEAN,
+    freeShipping BOOLEAN,
+    score FLOAT,
     version VARCHAR(500)
 );
 
@@ -30,7 +35,7 @@ CREATE TABLE purchase (
     id INTEGER DEFAULT NEXTVAL ('purchase_seq') PRIMARY KEY,
     buyer INTEGER,
     purchase_time TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (buyer) REFERENCES user (id)
+    FOREIGN KEY (buyer) REFERENCES "user" (id)
 );
 
 CREATE SEQUENCE product_in_purchase_seq;

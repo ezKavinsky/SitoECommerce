@@ -3,7 +3,6 @@ package progettopsw.sitoecommerce.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -17,24 +16,44 @@ public class Product {
     private int id;
 
     @Basic
-    @Column(name = "name", nullable = true, length = 50)
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 
     @Basic
-    @Column(name = "bar_code", nullable = true, length = 70)
-    private String barCode;
+    @Column(name = "brand", nullable=false)
+    private String brand;
 
     @Basic
-    @Column(name = "description", nullable = true, length = 500)
+    @Column(name = "bar_code", nullable = false, length = 70)
+    private String barCode;
+
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "description", nullable = false, length = 500)
     private String description;
 
     @Basic
-    @Column(name = "price", nullable = true)
+    @Column(name = "price", nullable = false)
     private float price;
 
     @Basic
-    @Column(name = "quantity", nullable = true)
+    @Column(name = "quantity", nullable = false)
     private int quantity;
+
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "production_year", nullable = false)
+    private int production_year;
+
+    @Basic
+    @Column(name = "inPromo", nullable = false)
+    private boolean inPromo;
+
+    @Basic
+    @Column(name = "freeShipping", nullable = false)
+    private boolean freeShipping;
+
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "score", nullable = true)
+    private double score;
 
     @Basic
     @Column(name = "version", nullable = false)
