@@ -44,9 +44,12 @@ public class User {
     @JsonIgnore
     private List<Purchase> purchases;
 
+    @OneToMany(targetEntity = Review.class, mappedBy = "user", cascade = CascadeType.MERGE)
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(targetEntity = Review.class, mappedBy = "user", cascade = CascadeType.MERGE)
     private List<Review> reviews;
+
+    @OneToMany(targetEntity = CreditCard.class, mappedBy = "user", cascade = CascadeType.MERGE)
+    private List<CreditCard> creditCards;
 
 }//User

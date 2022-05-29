@@ -52,11 +52,22 @@ CREATE TABLE product_in_purchase (
 CREATE SEQUENCE review_seq;
 
 CREATE TABLE review (
-    id INTEGER DEFAULT nextval('review_seq') PRIMARY KEY,
+    id INTEGER DEFAULT NEXTVAL ('review_seq') PRIMARY KEY,
     title VARCHAR(50),
     stars FLOAT,
     product INTEGER,
     "user" INTEGER,
     FOREIGN KEY (product) REFERENCES product(id),
     FOREIGN KEY ("user") REFERENCES "user" (id)
+);
+
+CREATE SEQUENCE credit_card_seq;
+
+CREATE TABLE credit_card (
+    id INTEGER DEFAULT NEXTVAL ('credit_card_seq') PRIMARY KEY,
+    number INTEGER,
+    expiration_date DATE,
+    security_code INTEGER,
+    "user" INTEGER,
+    FOREIGN KEY ("user") REFERENCES "user"(id)
 );
