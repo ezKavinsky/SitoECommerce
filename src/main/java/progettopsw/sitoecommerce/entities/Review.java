@@ -24,8 +24,8 @@ public class Review {
   @JoinColumn(name = "product")
     private Product product;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "user")
-    private User user;
+  @ManyToOne(cascade = CascadeType.MERGE)
+  @JoinColumn(name = "user")
+  private User user;
 
 }//Review
