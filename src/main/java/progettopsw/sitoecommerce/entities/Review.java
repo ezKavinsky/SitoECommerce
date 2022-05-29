@@ -13,7 +13,7 @@ public class Review {
     private int id;
 
     @Basic
-    @Column(name = "title", nullable = false)
+    @Column(name = "title", nullable = false, length = 50)
     private String title;
 
     @Basic
