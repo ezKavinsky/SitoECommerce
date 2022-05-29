@@ -48,3 +48,15 @@ CREATE TABLE product_in_purchase (
     FOREIGN KEY (related_purchase) REFERENCES purchase (id),
     FOREIGN KEY (product) REFERENCES product (id)
 );
+
+CREATE SEQUENCE review_seq;
+
+CREATE TABLE review (
+    id INTEGER DEFAULT nextval('review_seq') PRIMARY KEY,
+    title VARCHAR(50),
+    stars FLOAT,
+    product INTEGER,
+    "user" INTEGER,
+    FOREIGN KEY (product) REFERENCES product(id),
+    FOREIGN KEY ("user") REFERENCES "user" (id)
+);

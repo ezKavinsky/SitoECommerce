@@ -2,6 +2,8 @@ package progettopsw.sitoecommerce.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
+
 import java.util.List;
 import javax.persistence.*;
 
@@ -41,5 +43,10 @@ public class User {
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.MERGE)
     @JsonIgnore
     private List<Purchase> purchases;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(targetEntity = Review.class, mappedBy = "user", cascade = CascadeType.MERGE)
+    private List<Review> reviews;
 
 }//User
