@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -13,8 +14,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 
 @Configuration
-@EnableGlobalMethodSecurity ty(prePostEnabled = true)
-public class SecurityConfiguration extends WebSecurityConfigureAdapter{
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(HttpSecurity http) throws Exception{
@@ -24,7 +25,7 @@ public class SecurityConfiguration extends WebSecurityConfigureAdapter{
                 .antMatchers( "/users/**").permitAll()
                 .antMatchers("/products/**").permitAll()
                 .antMatchers( "/purchases/**").permitAll()
-                .anyRequest().authenticate().and().oauth2ResourceServer().jwt().jwtAuthenticationConverter(new JwtAuthenticationConverter());
+                .anyRequest().authenticated().and().oauth2ResourceServer().jwt().jwtAuthenticationConverter(new JwtAuthenticationConverter());
     }//configure
 
     @Bean
