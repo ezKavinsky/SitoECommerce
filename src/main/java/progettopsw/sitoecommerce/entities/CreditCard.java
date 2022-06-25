@@ -1,7 +1,5 @@
 package progettopsw.sitoecommerce.entities;
-
 import lombok.Data;
-
 import javax.persistence.*;
 import java.util.Date;
 

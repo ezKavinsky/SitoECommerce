@@ -18,7 +18,7 @@ public class Review {
 
     @Basic
     @Column(name = "stars", nullable = false)
-    private double stars;
+    private int stars;
 
   @ManyToOne(cascade = CascadeType.MERGE)
   @JoinColumn(name = "product")

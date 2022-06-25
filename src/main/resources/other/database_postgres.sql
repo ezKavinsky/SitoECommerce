@@ -54,7 +54,7 @@ CREATE SEQUENCE review_seq;
 CREATE TABLE review (
     id INTEGER DEFAULT NEXTVAL ('review_seq') PRIMARY KEY,
     title VARCHAR(50),
-    stars FLOAT,
+    stars INTEGER,
     product INTEGER,
     "user" INTEGER,
     FOREIGN KEY (product) REFERENCES product(id),
