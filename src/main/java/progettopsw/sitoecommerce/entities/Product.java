@@ -41,7 +41,7 @@ public class Product {
 
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "production_year", nullable = false)
-    private int production_year;
+    private int productionYear;
 
     @Basic
     @Column(name = "inPromo", nullable = false)

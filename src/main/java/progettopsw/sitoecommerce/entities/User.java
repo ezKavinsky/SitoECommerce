@@ -2,7 +2,9 @@ package progettopsw.sitoecommerce.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
 
@@ -16,15 +18,15 @@ public class User {
     private int id;
 
     @Basic
-    @Column(name = "code", nullable = true, length = 70)
+    @Column(name = "code", nullable = false, length = 70)
     private String code;
 
     @Basic
-    @Column(name = "first_name", nullable = true, length = 50)
+    @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
     @Basic
-    @Column(name = "last_name", nullable = true, length = 50)
+    @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
     @Basic
@@ -32,12 +34,22 @@ public class User {
     private String telephoneNumber;
 
     @Basic
-    @Column(name = "email", nullable = true, length = 90)
+    @Column(name = "email", nullable = false, length = 90)
     private String email;
 
     @Basic
-    @Column(name = "address", nullable = true, length = 150)
+    @Column(name = "address", nullable = false, length = 150)
     private String address;
+
+    @Basic
+    @Column(name = "birth_date", nullable = false)
+    private Date birthDate;
+
+    @Basic
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "registration_date")
+    private Date registrationDate;
 
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.MERGE)
     @JsonIgnore

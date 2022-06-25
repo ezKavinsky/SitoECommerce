@@ -9,7 +9,9 @@ CREATE TABLE "user" (
     last_name VARCHAR(50),
     telephone_number VARCHAR(20),
     email VARCHAR(90),
-    address VARCHAR(150)
+    address VARCHAR(150),
+    birth_date DATE,
+    registration_date TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE SEQUENCE product_seq;
