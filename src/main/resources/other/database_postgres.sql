@@ -67,8 +67,9 @@ CREATE SEQUENCE credit_card_seq;
 
 CREATE TABLE credit_card (
     id INTEGER DEFAULT NEXTVAL ('credit_card_seq') PRIMARY KEY,
-    number INTEGER,
-    expiration_date DATE,
+    number VARCHAR(30),
+    expiration_month INTEGER,
+    expiration_year INTEGER,
     security_code INTEGER,
     "user" INTEGER,
     FOREIGN KEY ("user") REFERENCES "user"(id)
