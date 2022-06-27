@@ -1,6 +1,8 @@
 package progettopsw.sitoecommerce.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import progettopsw.sitoecommerce.entities.Product;
 import progettopsw.sitoecommerce.entities.Review;
@@ -25,5 +27,13 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
     boolean existsByUser(User user);
     boolean existsByProduct(Product product);
     boolean existsByUserAndProduct(User user, Product product);
+
+    @Modifying
+    @Query("update Review r set r.title = ?1 where r.product = ?2 and r.user = ?3")
+    int updateTitle(String title, Product product, User user);
+
+    @Modifying
+    @Query("update Review r set r.stars = ?1 where r.product = ?2 and r.user = ?3")
+    int updateStars(double stars, Product product, User user);
 
 }//ReviewRepository
