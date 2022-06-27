@@ -30,7 +30,7 @@ public class User {
     private String lastName;
 
     @Basic
-    @Column(name = "telephone_number", nullable = true, length = 20)
+    @Column(name = "telephone_number", nullable = false, length = 20)
     private String telephoneNumber;
 
     @Basic
@@ -50,6 +50,10 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "registration_date")
     private Date registrationDate;
+
+    @Basic
+    @Column(name = "status", nullable = false, length = 30)
+    private String status;
 
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.MERGE)
     @JsonIgnore

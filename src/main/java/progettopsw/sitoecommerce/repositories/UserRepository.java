@@ -25,7 +25,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findByBirthDate(Date date);
     List<User> findByBirthDateBefore(Date date);
     List<User> findByBirthDateAfter(Date date);
-    List<User> findByBirthDateBetween(Date date);
+    List<User> findByBirthDateBetween(Date startDate, Date endDate);
     boolean existsByEmail(String email);
     boolean existsByCode(String code);
     boolean existsByTelephoneNumber(String telephoneNumber);
@@ -34,20 +34,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     boolean existsByBirthDate(Date date);
     boolean existsByRegistrationDate(Date date);
 
-    @Modifying
-    @Query("update User u set u.email = ?1 where u.email = ?2")
-    int updateEmailFor(String email, String oldEmail);
-
-    @Modifying
-    @Query("update User u set u.telephoneNumber = ?1 where u.email = ?2")
-    int updateTelephoneNumber(String telephoneNumber, String email);
-
-    @Modifying
-    @Query("update User u set u.lastName = ?1 where u.email = ?2")
-    int updateLastName(String lastName, String email);
-
-    @Modifying
-    @Query("update User u set u.firstName = ?1 where u.email = ?2")
-    int updateFirstName(String firstName, String email);
-    
 }//UserRepository

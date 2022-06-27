@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import progettopsw.sitoecommerce.entities.Product;
 import progettopsw.sitoecommerce.support.exceptions.BarCodeAlreadyExistException;
 import progettopsw.sitoecommerce.repositories.ProductRepository;
+import progettopsw.sitoecommerce.support.exceptions.ProductNotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +22,17 @@ public class ProductService {
 
     @Transactional(readOnly = false)
     public void addProduct(Product product) throws BarCodeAlreadyExistException {
-        if(product.getBarCode() != null && productRepository.existsByBarCode(product.getBarCode())){
+        if(productRepository.existsByBarCode(product.getBarCode())){
             throw new BarCodeAlreadyExistException();
         }
         productRepository.save(product);
     }//addProduct
+
+    public void removeProduct(Product product) throws ProductNotFoundException{
+        if(!productRepository.existsByBarCode(product.getBarCode()))
+            throw new ProductNotFoundException();
+        productRepository.delete(product);
+    }//removeProduct
 
     @Transactional(readOnly = true)
     public List<Product> showAllProducts(){

@@ -38,28 +38,4 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("select p from Product p where (p.name like ?1 or ?1 is null) and (p.quantity > ?2 or ?2 is null) and (p.price > ?3 or ?3 is null)")
     List<Product> advancedSearch(String name, int quantity, int price);
 
-    @Modifying
-    @Query("update Product p set p.price = ?1 where p.barCode = ?2")
-    int updatePrice(float price, String barCode);
-
-    @Modifying
-    @Query("update Product p set p.inPromo = true where p.barCode = ?1")
-    int addInPromo(String barCode);
-
-    @Modifying
-    @Query("update Product p set p.inPromo = false where p.barCode = ?1")
-    int removeFromPromo(String barCode);
-
-    @Modifying
-    @Query("update Product p set p.freeShipping = true where p.barCode = ?1")
-    int addFreeShipping(String barCode);
-
-    @Modifying
-    @Query("update Product p set p.freeShipping = false where p.barCode = ?1")
-    int removeFreeShipping(String barCode);
-
-    @Modifying
-    @Query("update Product p set p.barCode = ?1 where p.barCode = ?2")
-    int updateBarCode(String barCode, String oldBarCode);
-
 }//ProductRepository

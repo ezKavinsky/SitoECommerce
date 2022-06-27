@@ -21,8 +21,4 @@ public interface CreditCardRepository extends JpaRepository<CreditCard, Integer>
     boolean existsByUser(User user);
     boolean existsByExpirationMonthAndExpirationYear(int month, int year);
 
-    @Modifying
-    @Query("update CreditCard c set c.expirationYear ?1 where c.number = ?2")
-    int updateExpiration(int year, String number);
-
 }//CreditCardRepository
