@@ -44,16 +44,16 @@ public class Product {
     private int productionYear;
 
     @Basic
-    @Column(name = "inPromo", nullable = false)
-    private boolean inPromo;
+    @Column(name = "free_shipping", nullable = false)
+    private boolean freeShipping;
 
     @Basic
-    @Column(name = "freeShipping", nullable = false)
-    private boolean freeShipping;
+    @Column(name = "shipping_price", nullable = true)
+    private float shippingPrice;
 
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "score", nullable = true)
-    private double score;
+    private float score;
 
     @Basic
     @Column(name = "version", nullable = false)

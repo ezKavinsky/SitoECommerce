@@ -17,8 +17,12 @@ public class Review {
     private String title;
 
     @Basic
+    @Column(name = "comment", nullable = true, length = 200)
+    private String comment;
+
+    @Basic
     @Column(name = "stars", nullable = false)
-    private int stars;
+    private float stars;
 
   @ManyToOne(cascade = CascadeType.MERGE)
   @JoinColumn(name = "product")

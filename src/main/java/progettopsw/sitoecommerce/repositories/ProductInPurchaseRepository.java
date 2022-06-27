@@ -14,6 +14,7 @@ public interface ProductInPurchaseRepository extends JpaRepository<ProductInPurc
     List<ProductInPurchase> findByPurchase(Purchase purchase);
     List<ProductInPurchase> findByProduct(Product product);
     List<ProductInPurchase> findByPurchaseAndProduct(Purchase purchase, Product product);
+    List<ProductInPurchase> findByFinalPrice(float finalPrice);
     boolean existsByPurchase(Purchase purchase);
     boolean existsByProduct(Product product);
     boolean existByPurchaseAndProduct(Purchase purchase, Product product);

@@ -24,6 +24,10 @@ public class ProductInPurchase {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
+    @Basic
+    @Column(name = "final_price", nullable = false)
+    private float finalPrice;
+
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "product")
     private Product product;

@@ -26,8 +26,9 @@ CREATE TABLE product (
     price FLOAT,
     quantity FLOAT,
     production_year INTEGER,
-    inPromo BOOLEAN,
-    freeShipping BOOLEAN,
+    in_promo BOOLEAN,
+    free_shipping BOOLEAN,
+    shipping_price FLOAT,
     score FLOAT,
     version VARCHAR(500)
 );
@@ -48,6 +49,7 @@ CREATE TABLE product_in_purchase (
     related_purchase INTEGER,
     product INTEGER,
     quantity INTEGER,
+    final_price FLOAT,
     FOREIGN KEY (related_purchase) REFERENCES purchase (id),
     FOREIGN KEY (product) REFERENCES product (id)
 );
@@ -57,7 +59,8 @@ CREATE SEQUENCE review_seq;
 CREATE TABLE review (
     id INTEGER DEFAULT NEXTVAL ('review_seq') PRIMARY KEY,
     title VARCHAR(50),
-    stars INTEGER,
+    comment VARCHAR(200),
+    stars FLOAT,
     product INTEGER,
     "user" INTEGER,
     FOREIGN KEY (product) REFERENCES product(id),

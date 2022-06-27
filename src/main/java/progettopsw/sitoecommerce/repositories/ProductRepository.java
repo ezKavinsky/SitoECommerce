@@ -1,41 +1,30 @@
 package progettopsw.sitoecommerce.repositories;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import progettopsw.sitoecommerce.entities.Product;
-
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
-    List<Product> findByNameContaining(String name); //trova per nome che contiene la stringa passata come parametro
-    List<Product> findByBarCode(String name);
-    List<Product> findByBrand(String brand);
-    List<Product> findByPrice(float price);
-    List<Product> findByPriceBetween(float price1, float price2);
-    List<Product> findByPriceLessThanEqual(float price);
-    List<Product> findByPriceGreaterThanEqual(float price);
-    List<Product> findByProductionYear(int year);
-    List<Product> findByProductionYearAfter(int year);
-    List<Product> findByProductionYearBefore(int year);
-    List<Product> findByInPromoTrue();
-    List<Product> findByInPromoFalse();
-    List<Product> findByFreeShippingTrue();
-    List<Product> findByFreeShippingFalse();
-    List<Product> findByScoreGreaterThanEqualOrderByScoreDesc(int score);
-    List<Product> findByScoreLessThanEqualOrderByScoreDesc(int score);
-    List<Product> findByBrandAndPriceGreaterThanEqual(String brand, int price);
-    List<Product> findByBrandAndPriceLessThanEqual(String brand, int price);
-    List<Product> findByBrandAndInPromoTrue(String brand);
-    List<Product> findByBrandAndInPromoFalse(String brand);
+    Product findByBarCode(String name);
     boolean existsByBarCode(String barCode);
-    boolean existsByBrand(String brand);
-    boolean existsByProductionYear(int year);
 
-    @Query("select p from Product p where (p.name like ?1 or ?1 is null) and (p.quantity > ?2 or ?2 is null) and (p.price > ?3 or ?3 is null)")
-    List<Product> advancedSearch(String name, int quantity, int price);
+    @Query("select p from Product p where (p.name like ?1 or ?1 is null) and (p.quantity >= ?2 or ?2 is null) and (p.price >= ?3 or ?3 is null) " +
+            "and (p.price <= ?4 or ?4 is null) and (p.productionYear >= ?5 or ?5 is null) and (p.productionYear <= ?6 or ?6 is null) " +
+            "and (p.freeShipping = ?7 or ?7 is null) and (p.score >= ?8 or ?8 is null) and (p.score <= ?9 or ?9 is null)")
+    List<Product> advancedProductSearch(String name, String brand, int quantity, int lowPrice, int highPrice, int lowYear, int highYear, boolean shipping,
+                                        int lowScore, int highScore);
+
+    @Query("select p from Product p where (p.name like ?1 or ?1 is null) and (p.quantity >= ?2 or ?2 is null) and (p.price >= ?3 or ?3 is null) " +
+            "and (p.price <= ?4 or ?4 is null) and (p.productionYear >= ?5 or ?5 is null) and (p.productionYear <= ?6 or ?6 is null) " +
+            "and (p.freeShipping = ?7 or ?7 is null) and (p.score >= ?8 or ?8 is null) and (p.score <= ?9 or ?9 is null)")
+    Page<Product> advancedPagedProductSearch(String name, String brand, int quantity, int lowPrice, int highPrice, int lowYear, int highYear, boolean shipping,
+                                             int lowScore, int highScore, Pageable paging);
 
 }//ProductRepository

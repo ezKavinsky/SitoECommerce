@@ -3,6 +3,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import progettopsw.sitoecommerce.entities.Product;
 import progettopsw.sitoecommerce.entities.User;
 
 import java.util.Date;
@@ -11,27 +12,22 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    List<User> findByFirstName(String firstName);
-    List<User> findByLastName(String lastName);
-    List<User> findByFirstNameAndLastName(String firstName, String lastName);
     User findByEmail(String email);
     User findByCode(String code);
-    List<User> findByTelephoneNumber(String telephoneNumber);
-    List<User> findByAddress(String address);
     List<User> findByRegistrationDate(Date date);
     List<User> findByRegistrationDateBefore(Date date);
     List<User> findByRegistrationDateAfter(Date date);
     List<User> findByRegistrationDateBetween(Date startDate, Date endDate);
-    List<User> findByBirthDate(Date date);
     List<User> findByBirthDateBefore(Date date);
     List<User> findByBirthDateAfter(Date date);
     List<User> findByBirthDateBetween(Date startDate, Date endDate);
     boolean existsByEmail(String email);
     boolean existsByCode(String code);
-    boolean existsByTelephoneNumber(String telephoneNumber);
-    boolean existsByAddress(String address);
-    boolean existsByLastName(String lastName);
-    boolean existsByBirthDate(Date date);
-    boolean existsByRegistrationDate(Date date);
+
+    @Query("select u from User u where (u.firstName = ?1 or ?1 is null) and (u.lastName = ?2 or ?2 is null) and (u.telephoneNumber = ?3 or ?3 is null)" +
+            "and (u.address = ?4 or ?4 is null) and (u.birthDate >= ?5 or ?5 is null) and (u.birthDate <= ?6 or ?6 is null) " +
+            "and (u.registrationDate >= ?7 or ?7 is null) and (u.registrationDate <= ?8 or ?8 is null) and (u.status = ?9 or ?9 is null)")
+    List<User> advancedUserSearch(String firstName, String lastName, String telephoneNumber, String address, Date startBDate, Date endBDate, Date startRDate,
+                                  Date endRDate, String status);
 
 }//UserRepository
