@@ -56,15 +56,16 @@ public class PurchasingService {
     }//getPurchaseByUser
 
     @Transactional(readOnly = true)
-    public List<Purchase> getPurchaseByUserInPeriod(User user, Date startDate, Date endDate) throws UserNotFoundException, DateWrongRangeException{
+    public List<Purchase> getPurchaseByAdvancedSearch(User user, Date startDate, Date endDate) throws UserNotFoundException, DateWrongRangeException{
         if ( !userRepository.existsById(user.getId())){
             throw new UserNotFoundException();
         }
         if ( startDate.compareTo(endDate) >=0 ){
             throw new DateWrongRangeException();
         }
-        return purchaseRepository.findByBuyerInPeriod(startDate,endDate,user);
+        return purchaseRepository.advancedSearch(startDate,endDate,user);
+    }//getPurchaseByAdvancedSearch
 
 
-    }
+
 }//PurchasingService

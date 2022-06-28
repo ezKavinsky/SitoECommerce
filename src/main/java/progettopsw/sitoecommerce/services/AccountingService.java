@@ -10,7 +10,6 @@ import progettopsw.sitoecommerce.support.exceptions.MailUserAlreadyExistsExcepti
 import progettopsw.sitoecommerce.repositories.UserRepository;
 import progettopsw.sitoecommerce.support.exceptions.UserNotFoundException;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -136,43 +135,7 @@ public class AccountingService {
     @Transactional(readOnly = true)
     public List<User> showUsersByAdvancedSearch(String firstName, String lastName, String telephoneNumber, String address, Date startBDate, Date endBdate,
                                                 Date startRDate, Date endRDate, String status){
-        return userRepository.advancedUserSearch(firstName, lastName, telephoneNumber, address, startBDate, endBdate, startRDate, endRDate, status);
+        return userRepository.advancedSearch(firstName, lastName, telephoneNumber, address, startBDate, endBdate, startRDate, endRDate, status);
     }//showUsersByAdvancedSearch
-
-    @Transactional(readOnly = true)
-    public List<User> showUsersByRegistrationDate(Date date){
-        return userRepository.findByRegistrationDate(date);
-    }//showUsersByRegistrationDate
-
-    @Transactional(readOnly = true)
-    public List<User> showUsersByRegistrationDateBefore(Date date){
-        return userRepository.findByRegistrationDateBefore(date);
-    }//showUsersByRegistrationDateBefore
-
-    @Transactional(readOnly = true)
-    public List<User> showUsersByRegistrationDateAfter(Date date){
-        return userRepository.findByRegistrationDateAfter(date);
-    }//showUsersByRegistrationDateAfter
-
-    @Transactional(readOnly = true)
-    public List<User> showUsersByRegistrationDateBetween(Date startDate, Date endDate){
-        return userRepository.findByRegistrationDateBetween(startDate, endDate);
-    }//showUsersByRegistrationDateBetween
-
-    @Transactional(readOnly = true)
-    public List<User> showUsersByBirthDateBefore(Date birthDate){
-        return userRepository.findByBirthDateBefore(birthDate);
-    }//showUsersByBirthDate
-
-    @Transactional(readOnly = true)
-    public List<User> showUsersByBirthDateAfter(Date birthDate){
-        return userRepository.findByBirthDateAfter(birthDate);
-    }//showUsersByBirthDateAfter
-
-    @Transactional(readOnly = true)
-    public List<User> showUsersByBirthDateBetween(Date startDate, Date endDate){
-        return userRepository.findByBirthDateBetween(startDate, endDate);
-    }//showUsersByBirthDateBetween
-
 
 }//AccountingService

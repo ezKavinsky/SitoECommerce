@@ -18,13 +18,13 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("select p from Product p where (p.name like ?1 or ?1 is null) and (p.quantity >= ?2 or ?2 is null) and (p.price >= ?3 or ?3 is null) " +
             "and (p.price <= ?4 or ?4 is null) and (p.productionYear >= ?5 or ?5 is null) and (p.productionYear <= ?6 or ?6 is null) " +
             "and (p.freeShipping = ?7 or ?7 is null) and (p.score >= ?8 or ?8 is null) and (p.score <= ?9 or ?9 is null)")
-    List<Product> advancedProductSearch(String name, String brand, int quantity, int lowPrice, int highPrice, int lowYear, int highYear, boolean shipping,
+    List<Product> advancedSearch(String name, String brand, int quantity, int lowPrice, int highPrice, int lowYear, int highYear, boolean shipping,
                                         int lowScore, int highScore);
 
     @Query("select p from Product p where (p.name like ?1 or ?1 is null) and (p.quantity >= ?2 or ?2 is null) and (p.price >= ?3 or ?3 is null) " +
             "and (p.price <= ?4 or ?4 is null) and (p.productionYear >= ?5 or ?5 is null) and (p.productionYear <= ?6 or ?6 is null) " +
             "and (p.freeShipping = ?7 or ?7 is null) and (p.score >= ?8 or ?8 is null) and (p.score <= ?9 or ?9 is null)")
-    Page<Product> advancedPagedProductSearch(String name, String brand, int quantity, int lowPrice, int highPrice, int lowYear, int highYear, boolean shipping,
+    Page<Product> advancedPagedSearch(String name, String brand, int quantity, int lowPrice, int highPrice, int lowYear, int highYear, boolean shipping,
                                              int lowScore, int highScore, Pageable paging);
 
 }//ProductRepository

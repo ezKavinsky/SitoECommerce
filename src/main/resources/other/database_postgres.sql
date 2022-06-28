@@ -24,9 +24,8 @@ CREATE TABLE product (
     bar_code VARCHAR(70),
     description VARCHAR(500),
     price FLOAT,
-    quantity FLOAT,
+    quantity INTEGER,
     production_year INTEGER,
-    in_promo BOOLEAN,
     free_shipping BOOLEAN,
     shipping_price FLOAT,
     score FLOAT,
@@ -59,7 +58,7 @@ CREATE SEQUENCE review_seq;
 CREATE TABLE review (
     id INTEGER DEFAULT NEXTVAL ('review_seq') PRIMARY KEY,
     title VARCHAR(50),
-    comment VARCHAR(200),
+    comment VARCHAR(300),
     stars FLOAT,
     product INTEGER,
     "user" INTEGER,
@@ -77,4 +76,25 @@ CREATE TABLE credit_card (
     security_code INTEGER,
     "user" INTEGER,
     FOREIGN KEY ("user") REFERENCES "user"(id)
+);
+
+CREATE SEQUENCE promo_seq;
+
+CREATE TABLE promo (
+    id INTEGER DEFAULT NEXTVAL ('promo_seq') PRIMARY KEY,
+    name VARCHAR(50),
+    discount INTEGER,
+    start_date DATE,
+    end_date DATE
+);
+
+CREATE SEQUENCE product_in_promo_seq;
+
+CREATE TABLE product_in_promo (
+    id INTEGER DEFAULT NEXTVAL ('product_in_promo_seq') PRIMARY KEY,
+    related_promo INTEGER,
+    product INTEGER,
+    discount_price FLOAT,
+    FOREIGN KEY (related_promo) REFERENCES promo(id),
+    FOREIGN KEY (product) REFERENCES product(id)
 );

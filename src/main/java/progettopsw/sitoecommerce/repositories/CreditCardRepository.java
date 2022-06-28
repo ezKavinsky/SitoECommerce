@@ -14,11 +14,12 @@ import java.util.List;
 public interface CreditCardRepository extends JpaRepository<CreditCard, Integer> {
 
     CreditCard findByNumber(String number);
-    List<CreditCard> findByExpirationYear(int year);
-    List<CreditCard> findByExpirationMonthAndExpirationYear(int month, int year);
-    User findByUser(User user);
+    CreditCard findByUser(User user);
+
+    @Query("select c from CreditCard c where (c.expirationMonth = ?1 or ?1 is null) and (c.expirationYear = ?2)")
+    List<CreditCard> findByExpirationDate(int month, int year);
+
     boolean existsByNumber(String number);
     boolean existsByUser(User user);
-    boolean existsByExpirationMonthAndExpirationYear(int month, int year);
 
 }//CreditCardRepository

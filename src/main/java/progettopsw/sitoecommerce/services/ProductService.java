@@ -149,14 +149,14 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<Product> showProductsByAdvancedSearch(String name, String brand, int quantity, int lowPrice, int highPrice, int lowYear, int highYear,
                                                       boolean shipping, int lowScore, int highScore){
-        return productRepository.advancedProductSearch(name, brand, quantity, lowPrice, highPrice, lowYear, highYear, shipping, lowScore, highScore);
+        return productRepository.advancedSearch(name, brand, quantity, lowPrice, highPrice, lowYear, highYear, shipping, lowScore, highScore);
     }//showAllProducts
 
     @Transactional(readOnly = true)
     public List<Product> showProductsByAdvancedPagedSearch(int pageNumber, int pageSize, String sortBy, String name, String brand, int quantity, int lowPrice,
                                                       int highPrice, int lowYear, int highYear, boolean shipping, int lowScore, int highScore){
         Pageable paging = PageRequest.of(pageNumber,pageSize, Sort.by(sortBy));
-        Page<Product> pagedResult = productRepository.advancedPagedProductSearch(name, brand, quantity, lowPrice, highPrice, lowYear, highYear, shipping, lowScore,
+        Page<Product> pagedResult = productRepository.advancedPagedSearch(name, brand, quantity, lowPrice, highPrice, lowYear, highYear, shipping, lowScore,
                 highScore, paging);
         if(pagedResult.hasContent()){
             return pagedResult.getContent();

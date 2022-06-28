@@ -1,8 +1,8 @@
 spring:
   datasource:
-    password: '***'
+    password: 'admin'
     driver-class-name: org.postgresql.Driver
-    username: '***'
+    username: 'postgres'
     url: jdbc:postgresql://localhost:5432/ecommerce
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL82Dialect
