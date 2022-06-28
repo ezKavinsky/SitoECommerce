@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import progettopsw.sitoecommerce.entities.User;
-import progettopsw.sitoecommerce.support.exceptions.CodeUserAlreadyExists;
+import progettopsw.sitoecommerce.support.exceptions.CodeUserAlreadyExistsException;
 import progettopsw.sitoecommerce.support.exceptions.MailUserAlreadyExistsException;
 import progettopsw.sitoecommerce.repositories.UserRepository;
 import progettopsw.sitoecommerce.support.exceptions.UserNotFoundException;
@@ -20,11 +20,11 @@ public class AccountingService {
     private UserRepository userRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public User registerUser(User user) throws MailUserAlreadyExistsException, CodeUserAlreadyExists {
+    public User registerUser(User user) throws MailUserAlreadyExistsException, CodeUserAlreadyExistsException {
         if(userRepository.existsByEmail(user.getEmail())){
             throw new MailUserAlreadyExistsException();
         } else if(userRepository.existsByCode(user.getCode())){
-            throw new CodeUserAlreadyExists();
+            throw new CodeUserAlreadyExistsException();
         }
         return userRepository.save(user);
     }//registerUser

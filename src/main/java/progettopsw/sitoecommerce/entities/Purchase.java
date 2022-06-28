@@ -26,7 +26,15 @@ public class Purchase {
     @JoinColumn(name = "buyer")
     private User buyer;
 
+    @ManyToOne
+    @JoinColumn(name = "credit_card")
+    private CreditCard creditCard;
+
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.MERGE)
     private List<ProductInPurchase> productsInPurchase;
+
+    @Basic
+    @JoinColumn(name = "total")
+    private float total;
 
 }//Purchase

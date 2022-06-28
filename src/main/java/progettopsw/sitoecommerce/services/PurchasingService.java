@@ -2,18 +2,16 @@ package progettopsw.sitoecommerce.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import progettopsw.sitoecommerce.entities.Product;
-import progettopsw.sitoecommerce.entities.ProductInPurchase;
-import progettopsw.sitoecommerce.entities.Purchase;
-import progettopsw.sitoecommerce.entities.User;
-import progettopsw.sitoecommerce.support.exceptions.DateWrongRangeException;
-import progettopsw.sitoecommerce.support.exceptions.QuantityProductUnavailableException;
-import progettopsw.sitoecommerce.support.exceptions.UserNotFoundException;
+import progettopsw.sitoecommerce.entities.*;
+import progettopsw.sitoecommerce.repositories.CreditCardRepository;
+import progettopsw.sitoecommerce.support.exceptions.*;
 import progettopsw.sitoecommerce.repositories.ProductInPurchaseRepository;
 import progettopsw.sitoecommerce.repositories.PurchaseRepository;
 import progettopsw.sitoecommerce.repositories.UserRepository;
 import javax.persistence.EntityManager;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -24,12 +22,21 @@ public class PurchasingService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private CreditCardRepository creditCardRepository;
+    @Autowired
     private ProductInPurchaseRepository productInPurchaseRepository;
     @Autowired
     private EntityManager entityManager;
 
-    @Transactional(readOnly = false)
-    public Purchase addPurchase(Purchase purchase) throws QuantityProductUnavailableException {
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public Purchase addPurchase(Purchase purchase) throws NotEnoughMoneyException,
+            QuantityProductUnavailableException, CreditCardNotFoundException, CreditCardExpiredException {
+        if(isExpired(purchase.getCreditCard())){
+            throw new CreditCardExpiredException();
+        }
+        if(purchase.getTotal() > purchase.getCreditCard().getBalance()){
+            throw new NotEnoughMoneyException();
+        }
         Purchase result = purchaseRepository.save(purchase);
         for(ProductInPurchase pip : result.getProductsInPurchase()){
             pip.setPurchase(result);
@@ -66,6 +73,14 @@ public class PurchasingService {
         return purchaseRepository.advancedSearch(startDate,endDate,user);
     }//getPurchaseByAdvancedSearch
 
-
+    @Transactional(readOnly = true)
+    public boolean isExpired(CreditCard creditCard) throws CreditCardNotFoundException {
+        if(!creditCardRepository.existsByNumber(creditCard.getNumber())){
+            throw new CreditCardNotFoundException();
+        } else {
+            Calendar now = Calendar.getInstance();
+            return (now.YEAR - creditCard.getExpirationYear() >= 0) && (now.MONTH - creditCard.getExpirationMonth() >= 0);
+        }
+    }//checkExpirationDate
 
 }//PurchasingService

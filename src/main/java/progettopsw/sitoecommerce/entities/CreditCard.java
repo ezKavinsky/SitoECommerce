@@ -1,7 +1,9 @@
 package progettopsw.sitoecommerce.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -25,11 +27,21 @@ public class CreditCard {
     private int expirationYear;
 
     @Basic
+    @Column(name = "balance", nullable = false)
+    @JsonIgnore
+    private float balance;
+
+    @Basic
     @Column(name = "security_code", nullable = false)
+    @JsonIgnore
     private int security_code;
 
     @ManyToOne
     @JoinColumn(name = "user")
     private User user;
+
+    @OneToMany(targetEntity = Purchase.class, mappedBy = "creditCard", cascade = CascadeType.MERGE)
+    @JsonIgnore
+    private List<Purchase> purchases;
 
 }//CreditCard

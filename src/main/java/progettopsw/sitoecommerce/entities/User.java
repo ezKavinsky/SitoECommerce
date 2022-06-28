@@ -55,7 +55,7 @@ public class User {
     @Column(name = "status", nullable = false, length = 30)
     private String status;
 
-    @OneToMany(mappedBy = "buyer", cascade = CascadeType.MERGE)
+    @OneToMany(targetEntity = Purchase.class, mappedBy = "buyer", cascade = CascadeType.MERGE)
     @JsonIgnore
     private List<Purchase> purchases;
 
@@ -65,6 +65,7 @@ public class User {
     private List<Review> reviews;
 
     @OneToMany(targetEntity = CreditCard.class, mappedBy = "user", cascade = CascadeType.MERGE)
+    @JsonIgnore
     private List<CreditCard> creditCards;
 
 }//User

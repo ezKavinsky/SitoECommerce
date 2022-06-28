@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import progettopsw.sitoecommerce.entities.User;
 import progettopsw.sitoecommerce.support.ResponseMessage;
-import progettopsw.sitoecommerce.support.exceptions.CodeUserAlreadyExists;
+import progettopsw.sitoecommerce.support.exceptions.CodeUserAlreadyExistsException;
 import progettopsw.sitoecommerce.support.exceptions.MailUserAlreadyExistsException;
 import progettopsw.sitoecommerce.services.AccountingService;
 
@@ -27,7 +27,7 @@ public class AccountingController {
             return new ResponseEntity(added, HttpStatus.OK);
         }catch(MailUserAlreadyExistsException e){
             return new ResponseEntity(new ResponseMessage("ERROR_MAIL_USER_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST);
-        }catch(CodeUserAlreadyExists e){
+        }catch(CodeUserAlreadyExistsException e){
             return new ResponseEntity(new ResponseMessage("ERROR_CODE_USER_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST);
         }
     }//create

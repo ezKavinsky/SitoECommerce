@@ -32,13 +32,29 @@ CREATE TABLE product (
     version VARCHAR(500)
 );
 
+CREATE SEQUENCE credit_card_seq;
+
+CREATE TABLE credit_card (
+    id INTEGER DEFAULT NEXTVAL ('credit_card_seq') PRIMARY KEY,
+    number VARCHAR(30),
+    expiration_month INTEGER,
+    expiration_year INTEGER,
+    balance FLOAT,
+    security_code INTEGER,
+    "user" INTEGER,
+    FOREIGN KEY ("user") REFERENCES "user"(id)
+);
+
 CREATE SEQUENCE purchase_seq;
 
 CREATE TABLE purchase (
     id INTEGER DEFAULT NEXTVAL ('purchase_seq') PRIMARY KEY,
     buyer INTEGER,
+    credit_card INTEGER,
     purchase_time TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (buyer) REFERENCES "user" (id)
+    total FLOAT,
+    FOREIGN KEY (buyer) REFERENCES "user" (id),
+    FOREIGN KEY (credit_card) REFERENCES credit_card (id)
 );
 
 CREATE SEQUENCE product_in_purchase_seq;
@@ -64,18 +80,6 @@ CREATE TABLE review (
     "user" INTEGER,
     FOREIGN KEY (product) REFERENCES product(id),
     FOREIGN KEY ("user") REFERENCES "user" (id)
-);
-
-CREATE SEQUENCE credit_card_seq;
-
-CREATE TABLE credit_card (
-    id INTEGER DEFAULT NEXTVAL ('credit_card_seq') PRIMARY KEY,
-    number VARCHAR(30),
-    expiration_month INTEGER,
-    expiration_year INTEGER,
-    security_code INTEGER,
-    "user" INTEGER,
-    FOREIGN KEY ("user") REFERENCES "user"(id)
 );
 
 CREATE SEQUENCE promo_seq;
