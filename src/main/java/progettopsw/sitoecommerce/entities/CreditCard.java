@@ -17,12 +17,10 @@ public class CreditCard {
     private String number;
 
     @Basic
-    @Temporal(TemporalType.DATE)
     @Column(name = "expiration_month", nullable = false)
     private int expirationMonth;
 
     @Basic
-    @Temporal(TemporalType.DATE)
     @Column(name = "expiration_year", nullable = false)
     private int expirationYear;
 

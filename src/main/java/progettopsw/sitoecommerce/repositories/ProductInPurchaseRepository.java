@@ -14,7 +14,7 @@ public interface ProductInPurchaseRepository extends JpaRepository<ProductInPurc
 
     boolean existsByPurchase(Purchase purchase);
     boolean existsByProduct(Product product);
-    boolean existByPurchaseAndProduct(Purchase purchase, Product product);
+    boolean existsByPurchaseAndProduct(Purchase purchase, Product product);
 
     @Query("select p from ProductInPurchase p where (p.purchase = ?1 or ?1 is null) and (p.product = ?2 or ?2 is null)")
     List<ProductInPurchase> advancedSearch(Purchase purchase, Product product);
