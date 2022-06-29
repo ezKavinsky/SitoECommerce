@@ -39,7 +39,6 @@ CREATE TABLE credit_card (
     number VARCHAR(30),
     expiration_month INTEGER,
     expiration_year INTEGER,
-    balance FLOAT,
     security_code INTEGER,
     "user" INTEGER,
     FOREIGN KEY ("user") REFERENCES "user"(id)
@@ -53,6 +52,7 @@ CREATE TABLE purchase (
     credit_card INTEGER,
     purchase_time TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
     total FLOAT,
+    shipped BOOLEAN,
     FOREIGN KEY (buyer) REFERENCES "user" (id),
     FOREIGN KEY (credit_card) REFERENCES credit_card (id)
 );
@@ -101,4 +101,16 @@ CREATE TABLE product_in_promo (
     discount_price FLOAT,
     FOREIGN KEY (related_promo) REFERENCES promo(id),
     FOREIGN KEY (product) REFERENCES product(id)
+);
+
+CREATE SEQUENCE product_in_promo_purchase_seq;
+
+CREATE TABLE product_in_promo_purchase (
+    id INTEGER DEFAULT NEXTVAL ('product_in_promo_purchase_seq') PRIMARY KEY,
+    related_purchase INTEGER,
+    product_in_promo INTEGER,
+    quantity INTEGER,
+    final_price FLOAT,
+    FOREIGN KEY (related_purchase) REFERENCES purchase (id),
+    FOREIGN KEY (product_in_promo) REFERENCES product_in_promo (id)
 );

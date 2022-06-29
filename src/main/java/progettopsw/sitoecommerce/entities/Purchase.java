@@ -33,8 +33,15 @@ public class Purchase {
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.MERGE)
     private List<ProductInPurchase> productsInPurchase;
 
+    @OneToMany(mappedBy = "productInPromo", cascade = CascadeType.MERGE)
+    private List<ProductInPromoPurchase> productsInPromoPurchase;
+
     @Basic
     @JoinColumn(name = "total")
     private float total;
+
+    @Basic
+    @JoinColumn(name = "shipped")
+    private boolean shipped;
 
 }//Purchase

@@ -5,11 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import progettopsw.sitoecommerce.entities.*;
-import progettopsw.sitoecommerce.repositories.CreditCardRepository;
+import progettopsw.sitoecommerce.repositories.*;
 import progettopsw.sitoecommerce.support.exceptions.*;
-import progettopsw.sitoecommerce.repositories.ProductInPurchaseRepository;
-import progettopsw.sitoecommerce.repositories.PurchaseRepository;
-import progettopsw.sitoecommerce.repositories.UserRepository;
+
 import javax.persistence.EntityManager;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,17 +25,32 @@ public class PurchasingService {
     private ProductInPurchaseRepository productInPurchaseRepository;
     @Autowired
     private EntityManager entityManager;
+    @Autowired
+    private ProductInPromoPurchaseRepository productInPromoPurchaseRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Purchase addPurchase(Purchase purchase) throws NotEnoughMoneyException,
-            QuantityProductUnavailableException, CreditCardNotFoundException, CreditCardExpiredException {
+    public Purchase addPurchase(Purchase purchase, Promo promo) throws QuantityProductUnavailableException,
+            CreditCardNotFoundException, CreditCardExpiredException, PurchaseAlreadyExistsException {
         if(isExpired(purchase.getCreditCard())){
             throw new CreditCardExpiredException();
         }
-        if(purchase.getTotal() > purchase.getCreditCard().getBalance()){
-            throw new NotEnoughMoneyException();
+        if(purchaseRepository.existsById(purchase.getId())){
+            throw new PurchaseAlreadyExistsException();
         }
         Purchase result = purchaseRepository.save(purchase);
+        for(ProductInPromoPurchase pipp : result.getProductsInPromoPurchase()){
+            pipp.setPurchase(result);
+            ProductInPromoPurchase justAdded = productInPromoPurchaseRepository.save(pipp);
+            entityManager.refresh(justAdded);
+            Product product = justAdded.getProductInPromo().getProduct();
+            int newQuantity = justAdded.getQuantity() - pipp.getQuantity();
+            if(newQuantity < 0){
+                throw new QuantityProductUnavailableException();
+            }
+            product.setQuantity(newQuantity);
+            entityManager.refresh(pipp);
+        }
+        entityManager.refresh(result);
         for(ProductInPurchase pip : result.getProductsInPurchase()){
             pip.setPurchase(result);
             ProductInPurchase justAdded = productInPurchaseRepository.save(pip);
@@ -54,6 +67,35 @@ public class PurchasingService {
         return result;
     }//addPurchase
 
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public Purchase cancelPurchase(Purchase purchase) throws  PurchaseAlreadyShippedException, PurchaseNotFoundException{
+        Purchase result = null;
+        if(purchaseRepository.existsById(purchase.getId())){
+            if(!purchase.isShipped()){
+                result = purchaseRepository.getById(purchase.getId());
+                for(ProductInPurchase pip : result.getProductsInPurchase()){
+                    Product product = pip.getProduct();
+                    entityManager.refresh(product);
+                    product.setQuantity(product.getQuantity()+pip.getQuantity());
+                    productInPurchaseRepository.delete(pip);
+                }
+                for(ProductInPromoPurchase pipp : result.getProductsInPromoPurchase()){
+                    Product product = pipp.getProductInPromo().getProduct();
+                    entityManager.refresh(product);
+                    product.setQuantity(product.getQuantity()+pipp.getQuantity());
+                    productInPromoPurchaseRepository.delete(pipp);
+                }
+                purchaseRepository.delete(purchase);
+            } else {
+                throw new PurchaseAlreadyShippedException();
+            }
+        } else {
+            throw new PurchaseNotFoundException();
+        }
+        entityManager.refresh(result);
+        return result;
+    }//removePurchase
+
     @Transactional(readOnly = true)
     public List<Purchase> getPurchaseByUser(User user) throws UserNotFoundException {
         if ( !userRepository.existsById(user.getId())){
@@ -63,14 +105,14 @@ public class PurchasingService {
     }//getPurchaseByUser
 
     @Transactional(readOnly = true)
-    public List<Purchase> getPurchaseByAdvancedSearch(User user, Date startDate, Date endDate) throws UserNotFoundException, DateWrongRangeException{
+    public List<Purchase> getPurchaseByAdvancedSearch(User user, Date startDate, Date endDate, boolean shipped) throws UserNotFoundException, DateWrongRangeException{
         if ( !userRepository.existsById(user.getId())){
             throw new UserNotFoundException();
         }
         if ( startDate.compareTo(endDate) >=0 ){
             throw new DateWrongRangeException();
         }
-        return purchaseRepository.advancedSearch(startDate,endDate,user);
+        return purchaseRepository.advancedSearch(startDate,endDate,user,shipped);
     }//getPurchaseByAdvancedSearch
 
     @Transactional(readOnly = true)
@@ -83,4 +125,14 @@ public class PurchasingService {
         }
     }//checkExpirationDate
 
+    @Transactional(readOnly = true)
+    public List<ProductInPurchase> getProductsByPurchase(Purchase purchase){
+        return productInPurchaseRepository.advancedSearch(purchase,null);
+    }//getProductsInPurchase
+
+    @Transactional(readOnly = true)
+    public List<ProductInPromoPurchase> getProductsInPromoByPurchase(Purchase purchase){
+        return productInPromoPurchaseRepository.advancedSearch(purchase,null);
+    }//getProductInPromoByPurchase
+    
 }//PurchasingService

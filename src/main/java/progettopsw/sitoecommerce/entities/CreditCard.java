@@ -27,11 +27,6 @@ public class CreditCard {
     private int expirationYear;
 
     @Basic
-    @Column(name = "balance", nullable = false)
-    @JsonIgnore
-    private float balance;
-
-    @Basic
     @Column(name = "security_code", nullable = false)
     @JsonIgnore
     private int security_code;
