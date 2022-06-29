@@ -12,8 +12,8 @@ import java.util.List;
 @Repository
 public interface ProductInPromoRepository extends JpaRepository<ProductInPromo, Integer> {
 
-    @Query("select p from ProductInPromo p where (p.promo = ?1 or ?1 is null) and (p.product = ?2 or ?2 is null) and (p.discountPrice = ?3 or ?3 is null)")
-    List<ProductInPromo> advancedSearch(Promo promo, Product product, int discountPrice);
+    @Query("select p from ProductInPromo p where (p.promo = ?1 or ?1 is null) and (p.product = ?2 or ?2 is null)")
+    List<ProductInPromo> advancedSearch(Promo promo, Product product);
 
     boolean existsByProductAndPromo(Product product, Promo promo);
 

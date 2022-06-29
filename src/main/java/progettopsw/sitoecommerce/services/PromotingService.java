@@ -97,6 +97,10 @@ public class PromotingService {
     }//removeProductFromPromo
 
     @Transactional(readOnly = true)
-    public
+    public List<ProductInPromo> getProductsByPromo(Promo promo){
+        return productInPromoRepository.advancedSearch(promo, null;
+    }//getProductsByPromo
+
+    //Altri metodi di ricerca
 
 }//PromoService
