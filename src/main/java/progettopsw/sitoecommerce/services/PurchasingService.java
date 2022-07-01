@@ -69,14 +69,14 @@ public class PurchasingService {
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public Purchase cancelPurchase(Purchase purchase) throws  PurchaseAlreadyShippedException, PurchaseNotFoundException{
-        Purchase result = null;
+        Purchase result;
         if(purchaseRepository.existsById(purchase.getId())){
             if(!purchase.isShipped()){
                 result = purchaseRepository.getById(purchase.getId());
                 for(ProductInPurchase pip : result.getProductsInPurchase()){
                     Product product = pip.getProduct();
-                    entityManager.refresh(product);
                     product.setQuantity(product.getQuantity()+pip.getQuantity());
+                    entityManager.refresh(product);
                     productInPurchaseRepository.delete(pip);
                 }
                 for(ProductInPromoPurchase pipp : result.getProductsInPromoPurchase()){

@@ -4,15 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import progettopsw.sitoecommerce.entities.Product;
 import progettopsw.sitoecommerce.entities.ProductInPromo;
 import progettopsw.sitoecommerce.entities.Promo;
 import progettopsw.sitoecommerce.repositories.ProductInPromoRepository;
-import progettopsw.sitoecommerce.repositories.ProductRepository;
 import progettopsw.sitoecommerce.repositories.PromoRepository;
 import progettopsw.sitoecommerce.support.exceptions.*;
-
-import java.util.List;
+import javax.persistence.EntityManager;
 
 @Service
 public class PromotingService {
@@ -21,18 +18,19 @@ public class PromotingService {
     @Autowired
     private ProductInPromoRepository productInPromoRepository;
     @Autowired
-    private ProductRepository productRepository;
+    private EntityManager entityManager;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public Promo addPromo(Promo promo) throws PromoAlreadyExistsException{
         Promo result = null;
         if(!promoRepository.existsById(promo.getId())){
             result = promoRepository.save(promo);
-            for(ProductInPromo pip : promo.getProductsInPromo()){
-                pip.setPromo(promo);
-                pip.setDiscountPrice(pip.getProduct().getPrice()-(pip.getProduct().getPrice()* promo.getDiscount())/100);
-                ProductInPromo justAdded = productInPromoRepository.save(pip);
+            for(ProductInPromo pip : result.getProductsInPromo()){
+                pip.setPromo(result);
+                pip.setDiscountPrice(pip.getProduct().getPrice()-(pip.getProduct().getPrice()* result.getDiscount())/100);
+                productInPromoRepository.save(pip);
             }
+            entityManager.refresh(result);
         } else {
             throw new PromoAlreadyExistsException();
         }
@@ -54,53 +52,9 @@ public class PromotingService {
         return result;
     }//removePromo
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public ProductInPromo addProductInPromo(Promo promo, Product product) throws ProductAlreadyInThisPromoException,ProductNotFoundException,
-            PromoNotFoundException {
-        ProductInPromo result = null;
-        if(promoRepository.existsById(promo.getId())){
-            if(productRepository.existsById(product.getId())){
-                if(!productInPromoRepository.existsByProductAndPromo(product, promo)) {
-                    ProductInPromo pip = new ProductInPromo();
-                    pip.setProduct(product);
-                    pip.setPromo(promo);
-                    pip.setDiscountPrice(product.getPrice() - (product.getPrice() * promo.getDiscount()) / 100);
-                    result = pip;
-                } else {
-                    throw new ProductAlreadyInThisPromoException();
-                }
-            } else {
-                throw new ProductNotFoundException();
-            }
-        } else {
-            throw new PromoNotFoundException();
-        }
-        return result;
-    }//addProductInPromo
-
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public ProductInPromo removeProductFromPromo(Promo promo, ProductInPromo productInPromo) throws ProductNotInThisPromoException,
-            PromoNotFoundException{
-        ProductInPromo result = null;
-        if(promoRepository.existsById(promo.getId())) {
-            if (productInPromoRepository.existsByProductAndPromo(productInPromo.getProduct(), promo)) {
-                result = productInPromo;
-                promo.getProductsInPromo().remove(productInPromo);
-                productInPromoRepository.delete(productInPromo);
-            } else {
-                throw new ProductNotInThisPromoException();
-            }
-        } else {
-            throw new PromoNotFoundException();
-        }
-        return result;
-    }//removeProductFromPromo
-
     @Transactional(readOnly = true)
-    public List<ProductInPromo> getProductsByPromo(Promo promo){
-        return productInPromoRepository.advancedSearch(promo, null;
-    }//getProductsByPromo
-
-    //Altri metodi di ricerca
+    public Promo getPromoByProduct(ProductInPromo productInPromo){
+        return promoRepository.findByProductInPromo(productInPromo);
+    }  //getPromoByProduct
 
 }//PromoService
