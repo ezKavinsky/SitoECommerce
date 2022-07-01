@@ -38,16 +38,17 @@ public class PromotingService {
     }//addPromo
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Promo removePromo(Promo promo) throws PromoNotFoundException {
+    public Promo removePromo(String id) throws PromoNotFoundException {
         Promo result = null;
-        if(!promoRepository.existsById(promo.getId())){
+        int ident = Integer.parseInt(id);
+        if(!promoRepository.existsById(ident)){
             throw new PromoNotFoundException();
         } else {
-            result = promoRepository.getById(promo.getId());
-            for(ProductInPromo pip : promo.getProductsInPromo()){
+            result = promoRepository.getById(ident);
+            for(ProductInPromo pip : result.getProductsInPromo()){
                 productInPromoRepository.delete(pip);
             }
-            promoRepository.delete(promo);
+            promoRepository.delete(result);
         }
         return result;
     }//removePromo

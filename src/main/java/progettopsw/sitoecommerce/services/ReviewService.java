@@ -31,8 +31,6 @@ public class ReviewService {
     private ProductRepository productRepository;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private EntityManager entityManager;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public Review addReview(Review review) throws UserNotFoundException, ProductNotFoundException, ReviewAlreadyExistsException{
@@ -44,7 +42,6 @@ public class ReviewService {
                     result.getUser().getReviews().add(review);
                     result.getProduct().getReviews().add(review);
                     result.getProduct().setScore((result.getProduct().getScore()+result.getStars())/result.getProduct().getReviews().size());
-                    entityManager.refresh(result);
                 } else {
                     throw new UserNotFoundException();
                 }
@@ -58,48 +55,60 @@ public class ReviewService {
     }//addReview
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Review removeReview(Review review) throws ReviewNotFoundException{
-        Review result;
-        if(reviewRepository.existsById(review.getId())){
-            result = reviewRepository.getById(review.getId());
-            result.getProduct().setScore((result.getProduct().getScore()-result.getStars())/result.getProduct().getReviews().size()-1);
-            result.getProduct().getReviews().remove(result);
-            result.getUser().getReviews().remove(result);
+    public void removeReview(String id) throws ReviewNotFoundException{
+        int ident = Integer.parseInt(id);
+        if(reviewRepository.existsById(ident)){
+            Review review = reviewRepository.getById(ident);
+            review.getProduct().setScore((review.getProduct().getScore()-review.getStars())/review.getProduct().getReviews().size()-1);
+            review.getProduct().getReviews().remove(review);
+            review.getUser().getReviews().remove(review);
             reviewRepository.delete(review);
         } else {
             throw new ReviewNotFoundException();
         }
-        return result;
     }//removeReview
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateComment(String comment, Review review) throws ReviewNotFoundException{
-        if(reviewRepository.existsById(review.getId())){
-            reviewRepository.getById(review.getId()).setComment(comment);
+    public Review updateComment(String comment, String id) throws ReviewNotFoundException{
+        int ident = Integer.parseInt(id);
+        Review result;
+        if(reviewRepository.existsById(ident)){
+            result = reviewRepository.getById(ident);
+            result.setComment(comment);
         } else {
             throw new ReviewNotFoundException();
         }
+
+        return result;
     }//updateComment
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateStars(int stars, Review review) throws ReviewNotFoundException{
-        if(reviewRepository.existsById(review.getId())){
-            Product product = review.getProduct();
-            product.setScore((product.getScore()-review.getStars())/product.getReviews().size()-1);
-            reviewRepository.getById(review.getId()).setStars(stars);
-            product.setScore((product.getScore()+ review.getStars())/product.getReviews().size());
+    public Review updateStars(int stars, String id) throws ReviewNotFoundException{
+        int ident = Integer.parseInt(id);
+        Review result;
+        if(reviewRepository.existsById(ident)){
+            result = reviewRepository.getById(ident);
+            Product product = result.getProduct();
+            product.setScore((product.getScore()-result.getStars())/product.getReviews().size()-1);
+            reviewRepository.getById(result.getId()).setStars(stars);
+            product.setScore((product.getScore()+ result.getStars())/product.getReviews().size());
         } else {
             throw new ReviewNotFoundException();
         }
+        return result;
     }//updateStars
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateTitle(String title, Review review) throws ReviewNotFoundException{
-        if(reviewRepository.existsById(review.getId())){
-            reviewRepository.getById(review.getId()).setTitle(title);
+    public Review updateTitle(String title, String id) throws ReviewNotFoundException{
+        Review result;
+        int ident = Integer.parseInt(id);
+        if(reviewRepository.existsById(ident)){
+            result = reviewRepository.getById(ident);
+            result.setTitle(title);
         } else {
             throw new ReviewNotFoundException();
         }
+        return result;
     }//updateTitle
 
     @Transactional(readOnly = true)

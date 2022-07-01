@@ -11,8 +11,7 @@ CREATE TABLE "user" (
     email VARCHAR(90),
     address VARCHAR(150),
     birth_date DATE,
-    registration_date TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(30)
+    registration_date TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE SEQUENCE product_seq;

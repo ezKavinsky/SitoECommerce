@@ -29,7 +29,7 @@ public class PurchasingService {
     private ProductInPromoPurchaseRepository productInPromoPurchaseRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Purchase addPurchase(Purchase purchase, Promo promo) throws QuantityProductUnavailableException,
+    public Purchase addPurchase(Purchase purchase) throws QuantityProductUnavailableException,
             CreditCardNotFoundException, CreditCardExpiredException, PurchaseAlreadyExistsException {
         if(isExpired(purchase.getCreditCard())){
             throw new CreditCardExpiredException();
@@ -68,18 +68,18 @@ public class PurchasingService {
     }//addPurchase
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Purchase cancelPurchase(Purchase purchase) throws  PurchaseAlreadyShippedException, PurchaseNotFoundException{
-        Purchase result;
-        if(purchaseRepository.existsById(purchase.getId())){
+    public void cancelPurchase(String id) throws  PurchaseAlreadyShippedException, PurchaseNotFoundException{
+        int ident = Integer.parseInt(id);
+        if(purchaseRepository.existsById(ident)){
+            Purchase purchase = purchaseRepository.getById(ident);
             if(!purchase.isShipped()){
-                result = purchaseRepository.getById(purchase.getId());
-                for(ProductInPurchase pip : result.getProductsInPurchase()){
+                for(ProductInPurchase pip : purchase.getProductsInPurchase()){
                     Product product = pip.getProduct();
                     product.setQuantity(product.getQuantity()+pip.getQuantity());
                     entityManager.refresh(product);
                     productInPurchaseRepository.delete(pip);
                 }
-                for(ProductInPromoPurchase pipp : result.getProductsInPromoPurchase()){
+                for(ProductInPromoPurchase pipp : purchase.getProductsInPromoPurchase()){
                     Product product = pipp.getProductInPromo().getProduct();
                     entityManager.refresh(product);
                     product.setQuantity(product.getQuantity()+pipp.getQuantity());
@@ -92,8 +92,6 @@ public class PurchasingService {
         } else {
             throw new PurchaseNotFoundException();
         }
-        entityManager.refresh(result);
-        return result;
     }//removePurchase
 
     @Transactional(readOnly = true)

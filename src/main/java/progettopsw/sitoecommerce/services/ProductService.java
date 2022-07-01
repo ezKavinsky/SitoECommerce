@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import progettopsw.sitoecommerce.entities.Product;
+import progettopsw.sitoecommerce.entities.Promo;
 import progettopsw.sitoecommerce.support.exceptions.BarCodeAlreadyExistException;
 import progettopsw.sitoecommerce.repositories.ProductRepository;
 import progettopsw.sitoecommerce.support.exceptions.ProductNotFoundException;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,112 +23,157 @@ public class ProductService {
     private ProductRepository productRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void addProduct(Product product) throws BarCodeAlreadyExistException {
+    public Product addProduct(Product product) throws BarCodeAlreadyExistException {
         if(productRepository.existsByBarCode(product.getBarCode())){
             throw new BarCodeAlreadyExistException();
         }
-        productRepository.save(product);
+        Product result = productRepository.save(product);
+        return result;
     }//addProduct
 
     @Transactional(readOnly = false,propagation = Propagation.REQUIRED)
-    public void removeProduct(Product product) throws ProductNotFoundException{
-        if(!productRepository.existsByBarCode(product.getBarCode()))
+    public void removeProduct(String id) throws ProductNotFoundException{
+        int ident = Integer.parseInt(id);
+        if(!productRepository.existsById(ident))
             throw new ProductNotFoundException();
-        productRepository.delete(product);
+        else {
+            Product product = productRepository.getById(ident);
+            productRepository.delete(product);
+        }
     }//removeProduct
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateName(String name, Product product) throws ProductNotFoundException{
-        if(productRepository.existsById(product.getId())){
-            productRepository.getById(product.getId()).setName(name);
+    public Product updateName(String name, String id) throws ProductNotFoundException{
+        int ident = Integer.parseInt(id);
+        Product result;
+        if(productRepository.existsById(ident)){
+            result = productRepository.getById(ident);
+            result.setName(name);
         } else {
             throw new ProductNotFoundException();
         }
+        return result;
     }//updateName
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateBrand(String brand, Product product) throws ProductNotFoundException{
-        if(productRepository.existsById(product.getId())){
-            productRepository.getById(product.getId()).setBrand(brand);
+    public Product updateBrand(String brand, String id) throws ProductNotFoundException{
+        int ident = Integer.parseInt(id);
+        Product result;
+        if(productRepository.existsById(ident)){
+            result = productRepository.getById(ident);
+            result.setBrand(brand);
         } else {
             throw new ProductNotFoundException();
         }
+        return result;
     }//updateBrand
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateBarCode(String barCode, Product product) throws ProductNotFoundException{
-        if(productRepository.existsById(product.getId())){
-            productRepository.getById(product.getId()).setBarCode(barCode);
+    public Product updateBarCode(String barCode, String id) throws ProductNotFoundException{
+        int ident = Integer.parseInt(id);
+        Product result;
+        if(productRepository.existsById(ident)){
+            result = productRepository.getById(ident);
+            result.setBarCode(barCode);
         } else {
             throw new ProductNotFoundException();
         }
+        return result;
     }//updateBarCode
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateDescription(String description, Product product) throws ProductNotFoundException{
-        if(productRepository.existsById(product.getId())){
-            productRepository.getById(product.getId()).setDescription(description);
+    public Product updateDescription(String description, String id) throws ProductNotFoundException{
+        int ident = Integer.parseInt(id);
+        Product result;
+        if(productRepository.existsById(ident)){
+            result = productRepository.getById(ident);
+            result.setDescription(description);
         } else {
             throw new ProductNotFoundException();
         }
+        return result;
     }//updateDescription
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updatePrice(float price, Product product) throws ProductNotFoundException{
-        if(productRepository.existsById(product.getId())){
-            productRepository.getById(product.getId()).setPrice(price);
+    public Product updatePrice(float price, String id) throws ProductNotFoundException{
+        int ident = Integer.parseInt(id);
+        Product result;
+        if(productRepository.existsById(ident)){
+           result = productRepository.getById(ident);
+           result.setPrice(price);
         } else {
             throw new ProductNotFoundException();
         }
+        return result;
     }//updatePrice
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateQuantity(int quantity, Product product) throws ProductNotFoundException{
-        if(productRepository.existsById(product.getId())){
-            productRepository.getById(product.getId()).setQuantity(quantity);
+    public Product updateQuantity(int quantity, String id) throws ProductNotFoundException{
+        int ident = Integer.parseInt(id);
+        Product result;
+        if(productRepository.existsById(ident)){
+            result = productRepository.getById(ident);
+            result.setQuantity(quantity);
         } else {
             throw new ProductNotFoundException();
         }
+        return result;
     }//updateQuantity
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateProductionYear(int year, Product product) throws ProductNotFoundException{
-        if(productRepository.existsById(product.getId())){
-            productRepository.getById(product.getId()).setProductionYear(year);
+    public Product updateProductionYear(int year, String id) throws ProductNotFoundException{
+        int ident = Integer.parseInt(id);
+        Product result;
+        if(productRepository.existsById(ident)){
+            result = productRepository.getById(ident);
+            result.setProductionYear(year);
         } else {
             throw new ProductNotFoundException();
         }
+        return result;
     }//updateProductionYear
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateFreeShipping(boolean cond, Product product) throws ProductNotFoundException{
-        if(productRepository.existsById(product.getId())){
-            productRepository.getById(product.getId()).setFreeShipping(cond);
+    public Product updateFreeShipping(boolean cond, String id) throws ProductNotFoundException{
+        int ident = Integer.parseInt(id);
+        Product result;
+        if(productRepository.existsById(ident)){
+            result = productRepository.getById(ident);
+            result.setFreeShipping(cond);
         } else {
             throw new ProductNotFoundException();
         }
+        return result;
     }//removeFreeShipping
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateShippingPrice(float price, Product product) throws ProductNotFoundException{
-        if(productRepository.existsById(product.getId())){
-            if(productRepository.getById(product.getId()).isFreeShipping()){
-                productRepository.getById(product.getId()).setShippingPrice(0);
+    public Product updateShippingPrice(float price, String id) throws ProductNotFoundException{
+        int ident = Integer.parseInt(id);
+        Product result;
+        if(productRepository.existsById(ident)){
+            result = productRepository.getById(ident);
+            if(result.isFreeShipping()){
+                result.setShippingPrice(0);
             } else {
-                productRepository.getById(product.getId()).setShippingPrice(price);
+                result.setShippingPrice(price);
             }
         } else {
             throw new ProductNotFoundException();
         }
+        return result;
     }//updateShippingPrice
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateScore(float score, Product product) throws ProductNotFoundException{
-        if(productRepository.existsById(product.getId())){
-            productRepository.getById(product.getId()).setScore(score);
+    public Product updateScore(float score, String id) throws ProductNotFoundException{
+        int ident = Integer.parseInt(id);
+        Product result;
+        if(productRepository.existsById(ident)){
+           result = productRepository.getById(ident);
+           result.setScore(score);
         } else {
             throw new ProductNotFoundException();
         }
+        return result;
     }//updateScore
 
     @Transactional(readOnly = true)

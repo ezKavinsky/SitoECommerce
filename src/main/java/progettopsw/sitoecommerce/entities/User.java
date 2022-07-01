@@ -51,10 +51,6 @@ public class User {
     @Column(name = "registration_date")
     private Date registrationDate;
 
-    @Basic
-    @Column(name = "status", nullable = false, length = 30)
-    private String status;
-
     @OneToMany(targetEntity = Purchase.class, mappedBy = "buyer", cascade = CascadeType.MERGE)
     @JsonIgnore
     private List<Purchase> purchases;

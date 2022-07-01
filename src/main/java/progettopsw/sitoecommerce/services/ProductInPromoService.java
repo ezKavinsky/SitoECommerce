@@ -32,11 +32,15 @@ public class ProductInPromoService {
     private ProductRepository productRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public ProductInPromo addProductInPromo(Promo promo, Product product) throws ProductAlreadyInThisPromoException, ProductNotFoundException,
+    public ProductInPromo addProductInPromo(String id1, String id2) throws ProductAlreadyInThisPromoException, ProductNotFoundException,
             PromoNotFoundException {
+        int ident1 = Integer.parseInt(id1);
+        int ident2 = Integer.parseInt(id2);
         ProductInPromo result = null;
-        if(promoRepository.existsById(promo.getId())){
-            if(productRepository.existsById(product.getId())){
+        if(promoRepository.existsById(ident1)){
+            if(productRepository.existsById(ident2)){
+                Product product = productRepository.getById(ident2);
+                Promo promo = promoRepository.getById(ident1);
                 if(!productInPromoRepository.existsByProductAndPromo(product, promo)) {
                     ProductInPromo pip = new ProductInPromo();
                     pip.setProduct(product);
@@ -57,12 +61,14 @@ public class ProductInPromoService {
     }//addProductInPromo
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public ProductInPromo removeProductFromPromo(Promo promo, ProductInPromo productInPromo) throws ProductNotInThisPromoException,
+    public void removeProductFromPromo(String id1, String id2) throws ProductNotInThisPromoException,
             PromoNotFoundException{
-        ProductInPromo result = null;
-        if(promoRepository.existsById(promo.getId())) {
+        int ident1 = Integer.parseInt(id1);
+        int ident2 = Integer.parseInt(id2);
+        if(promoRepository.existsById(ident2)) {
+            Promo promo = promoRepository.getById(ident2);
+            ProductInPromo productInPromo = productInPromoRepository.getById(ident1);
             if (productInPromoRepository.existsByProductAndPromo(productInPromo.getProduct(), promo)) {
-                result = productInPromo;
                 promo.getProductsInPromo().remove(productInPromo);
                 productInPromoRepository.delete(productInPromo);
             } else {
@@ -71,7 +77,6 @@ public class ProductInPromoService {
         } else {
             throw new PromoNotFoundException();
         }
-        return result;
     }//removeProductFromPromo
 
     @Transactional(readOnly = true)

@@ -21,29 +21,33 @@ public class CreditCardService {
     private UserRepository userRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void addCreditCard(CreditCard creditCard, User user) throws CreditCardNumberAlreadyExistsException, UserNotFoundException, CreditCardExpiredException, CreditCardNotFoundException {
+    public CreditCard addCreditCard(CreditCard creditCard, String id) throws CreditCardNumberAlreadyExistsException, UserNotFoundException, CreditCardExpiredException, CreditCardNotFoundException {
+        CreditCard result;
+        int ident = Integer.parseInt(id);
         if(creditCardRepository.existsByNumber(creditCard.getNumber())) {
             throw new CreditCardNumberAlreadyExistsException();
         }
         if (isExpired(creditCardRepository.getById(creditCard.getId()))){
             throw new CreditCardExpiredException();
         }
-        if(userRepository.existsById(user.getId())){
-            userRepository.getById(user.getId()).getCreditCards().add(creditCard);
-            creditCardRepository.save(creditCard);
+        if(userRepository.existsById(ident)){
+            userRepository.getById(ident).getCreditCards().add(creditCard);
+            result = creditCardRepository.save(creditCard);
         } else {
             throw new UserNotFoundException();
         }
+        return result;
     }//addCreditCard
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void removeCreditCard(CreditCard creditCard, User user) throws CreditCardNotFoundException, WrongCreditCardUserException, UserNotFoundException{
+    public void removeCreditCard(CreditCard creditCard, String id) throws CreditCardNotFoundException, WrongCreditCardUserException, UserNotFoundException{
+        int ident = Integer.parseInt(id);
         if(!creditCardRepository.existsByNumber(creditCard.getNumber())){
             throw new CreditCardNotFoundException();
         } else {
-            if(userRepository.existsById(user.getId())){
-                if(userRepository.getById(user.getId()).getCreditCards().contains(creditCard)){
-                    userRepository.getById(user.getId()).getCreditCards().remove(creditCard);
+            if(userRepository.existsById(ident)){
+                if(userRepository.getById(ident).getCreditCards().contains(creditCard)){
+                    userRepository.getById(ident).getCreditCards().remove(creditCard);
                     creditCardRepository.delete(creditCard);
                 } else {
                     throw new WrongCreditCardUserException();

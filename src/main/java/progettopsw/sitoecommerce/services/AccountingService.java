@@ -10,6 +10,7 @@ import progettopsw.sitoecommerce.support.exceptions.MailUserAlreadyExistsExcepti
 import progettopsw.sitoecommerce.repositories.UserRepository;
 import progettopsw.sitoecommerce.support.exceptions.UserNotFoundException;
 
+import javax.persistence.EntityManager;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +19,8 @@ import java.util.List;
 public class AccountingService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EntityManager entityManager;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public User registerUser(User user) throws MailUserAlreadyExistsException, CodeUserAlreadyExistsException {
@@ -35,92 +38,103 @@ public class AccountingService {
     }//getAllUsers
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void deleteUser(User user) throws UserNotFoundException {
-        if(userRepository.existsById(user.getId())){
-            userRepository.delete(user);
-        } else {
-            throw new UserNotFoundException();
+    public void deleteUser(String id){
+        int ident = Integer.parseInt(id);
+        if(userRepository.existsById(ident)){
+            userRepository.delete(userRepository.getById(ident));
         }
     }//deleteUser
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateCode(String code, User user) throws UserNotFoundException {
-        if(userRepository.existsById(user.getId())){
-            userRepository.getById(user.getId()).setCode(code);
+    public User updateCode(String code, String id) throws UserNotFoundException {
+        User result;
+        int ident = Integer.parseInt(id);
+        if(userRepository.existsById(ident)){
+            result = userRepository.getById(ident);
+            result.setCode(code);
         } else {
             throw new UserNotFoundException();
         }
+        return result;
     }//updateCode
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateEmail(String email, User user) throws UserNotFoundException {
-        if(userRepository.existsById(user.getId())){
-            userRepository.getById(user.getId()).setEmail(email);
+    public User updateEmail(String email, String id) throws UserNotFoundException {
+        User result;
+        int ident = Integer.parseInt(id);
+        if(userRepository.existsById(ident)){
+            result = userRepository.getById(ident);
+            result.setEmail(email);
         } else {
             throw new UserNotFoundException();
         }
+        return result;
     }//updateEmail
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateFirstName(String firstName, User user) throws UserNotFoundException {
-        if(userRepository.existsById(user.getId())){
-            userRepository.getById(user.getId()).setFirstName(firstName);
+    public User updateFirstName(String firstName, String id) throws UserNotFoundException {
+        User result;
+        int ident = Integer.parseInt(id);
+        if(userRepository.existsById(ident)){
+            result = userRepository.getById(ident);
+            result.setFirstName(firstName);
         } else {
             throw new UserNotFoundException();
         }
+        return result;
     }//updateFirstName
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateLastName(String lastName, User user) throws UserNotFoundException {
-        if(userRepository.existsById(user.getId())){
-            userRepository.getById(user.getId()).setLastName(lastName);
+    public User updateLastName(String lastName, String id) throws UserNotFoundException {
+        User result;
+        int ident = Integer.parseInt(id);
+        if(userRepository.existsById(ident)){
+            result = userRepository.getById(ident);
+            result.setLastName(lastName);
         } else {
             throw new UserNotFoundException();
         }
+        return result;
     }//UpdateLastName
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateTelephoneNumber(String telephoneNumber, User user) throws UserNotFoundException {
-        if(userRepository.existsById(user.getId())){
-            userRepository.getById(user.getId()).setTelephoneNumber(telephoneNumber);
+    public User updateTelephoneNumber(String telephoneNumber, String id) throws UserNotFoundException {
+        User result;
+        int ident = Integer.parseInt(id);
+        if(userRepository.existsById(ident)){
+            result = userRepository.getById(ident);
+            result.setTelephoneNumber(telephoneNumber);
         } else {
             throw new UserNotFoundException();
         }
+        return result;
     }//updateTelephoneNumber
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateAddress(String address, User user) throws UserNotFoundException {
-        if(userRepository.existsById(user.getId())){
-            userRepository.getById(user.getId()).setAddress(address);
+    public User updateAddress(String address, String id) throws UserNotFoundException {
+        User result;
+        int ident = Integer.parseInt(id);
+        if(userRepository.existsById(ident)){
+            result = userRepository.getById(ident);
+            result.setAddress(address);
         } else {
             throw new UserNotFoundException();
         }
+        return result;
     }//updateAddress
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateBirthDate(Date birthDate, User user) throws UserNotFoundException {
-        if(userRepository.existsById(user.getId())){
-            userRepository.getById(user.getId()).setBirthDate(birthDate);
+    public User updateBirthDate(Date birthDate, String id) throws UserNotFoundException {
+        User result;
+        int ident = Integer.parseInt(id);
+        if(userRepository.existsById(ident)){
+            result = userRepository.getById(ident);
+            result.setBirthDate(birthDate);
         } else {
             throw new UserNotFoundException();
         }
+        return result;
     }//updateBirthDate
-
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void updateStatus(User user) throws UserNotFoundException{
-        if(userRepository.existsById(user.getId())){
-            Calendar today = Calendar.getInstance();
-            if(today.getTime().compareTo(userRepository.getById(user.getId()).getRegistrationDate()) > 4){
-                userRepository.getById(user.getId()).setStatus("FIDELITY_USER");
-            } else if(today.getTime().compareTo(userRepository.getById(user.getId()).getRegistrationDate()) < 1){
-                userRepository.getById(user.getId()).setStatus("NEW_USER");
-            } else {
-                userRepository.getById(user.getId()).setStatus("NORMAL_USER");
-            }
-        } else {
-            throw new UserNotFoundException();
-        }
-    }//updateStatus
 
     @Transactional(readOnly = true)
     public User showUserByEmail(String email){
@@ -134,8 +148,8 @@ public class AccountingService {
 
     @Transactional(readOnly = true)
     public List<User> showUsersByAdvancedSearch(String firstName, String lastName, String telephoneNumber, String address, Date startBDate, Date endBdate,
-                                                Date startRDate, Date endRDate, String status){
-        return userRepository.advancedSearch(firstName, lastName, telephoneNumber, address, startBDate, endBdate, startRDate, endRDate, status);
+                                                Date startRDate, Date endRDate){
+        return userRepository.advancedSearch(firstName, lastName, telephoneNumber, address, startBDate, endBdate, startRDate, endRDate);
     }//showUsersByAdvancedSearch
 
 }//AccountingService
