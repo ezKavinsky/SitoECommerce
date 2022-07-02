@@ -32,14 +32,10 @@ public class ProductService {
     }//addProduct
 
     @Transactional(readOnly = false,propagation = Propagation.REQUIRED)
-    public void removeProduct(String id) throws ProductNotFoundException{
+    public void removeProduct(String id){
         int ident = Integer.parseInt(id);
-        if(!productRepository.existsById(ident))
-            throw new ProductNotFoundException();
-        else {
-            Product product = productRepository.getById(ident);
-            productRepository.delete(product);
-        }
+        Product product = productRepository.getById(ident);
+        productRepository.delete(product);
     }//removeProduct
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
@@ -194,16 +190,16 @@ public class ProductService {
     }//showAllProducts
 
     @Transactional(readOnly = true)
-    public List<Product> showProductsByAdvancedSearch(String name, String brand, int quantity, int lowPrice, int highPrice, int lowYear, int highYear,
+    public List<Product> showProductsByAdvancedSearch(String name, String brand, int lowPrice, int highPrice, int lowYear, int highYear,
                                                       boolean shipping, int lowScore, int highScore){
-        return productRepository.advancedSearch(name, brand, quantity, lowPrice, highPrice, lowYear, highYear, shipping, lowScore, highScore);
+        return productRepository.advancedSearch(name, brand, lowPrice, highPrice, lowYear, highYear, shipping, lowScore, highScore);
     }//showAllProducts
 
     @Transactional(readOnly = true)
-    public List<Product> showProductsByAdvancedPagedSearch(int pageNumber, int pageSize, String sortBy, String name, String brand, int quantity, int lowPrice,
-                                                      int highPrice, int lowYear, int highYear, boolean shipping, int lowScore, int highScore){
+    public List<Product> showProductsByAdvancedPagedSearch(int pageNumber, int pageSize, String sortBy, String name, String brand, int lowPrice,
+                                                      int highPrice, int lowYear, int highYear, boolean freeShipping, int lowScore, int highScore){
         Pageable paging = PageRequest.of(pageNumber,pageSize, Sort.by(sortBy));
-        Page<Product> pagedResult = productRepository.advancedPagedSearch(name, brand, quantity, lowPrice, highPrice, lowYear, highYear, shipping, lowScore,
+        Page<Product> pagedResult = productRepository.advancedPagedSearch(name, brand, lowPrice, highPrice, lowYear, highYear, freeShipping, lowScore,
                 highScore, paging);
         if(pagedResult.hasContent()){
             return pagedResult.getContent();

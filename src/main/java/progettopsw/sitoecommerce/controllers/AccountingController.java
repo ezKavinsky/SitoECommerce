@@ -116,18 +116,21 @@ public class AccountingController {
     }//updateBirthDate
 
     @GetMapping
-    public ResponseEntity getByEmail(@RequestBody String email){
-        User user = accountingService.showUserByEmail(email);
-        return new ResponseEntity(user, HttpStatus.OK);
+    public User getByEmail(@RequestBody String email){
+       return accountingService.showUserByEmail(email);
     }//showByEmail
 
     @GetMapping
-    public ResponseEntity getByCode(@RequestBody String code){
-        User user = accountingService.showUserByCode(code);
-        return new ResponseEntity(user, HttpStatus.OK);
+    public User getByCode(@RequestBody String code){
+        return accountingService.showUserByCode(code);
     }//showByCode
 
     @GetMapping
-    public List<User>
+    public List<User> getByAdvancedSearch(@RequestBody String firstName, @RequestBody String lastName, @ RequestBody String telephoneNumber,
+                                              @RequestBody String address, @RequestBody Date startBDate, @RequestBody Date endBdate,
+                                              @RequestBody Date startRDate, @RequestBody Date endRDate) {
+        return accountingService.showUsersByAdvancedSearch(firstName, lastName, telephoneNumber, address,
+                startBDate, endBdate, startRDate, endRDate);
+    }//getByAdvancedSearch
 
 }//AccountingController
