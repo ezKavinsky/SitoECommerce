@@ -1,9 +1,9 @@
 package progettopsw.sitoecommerce.controllers;
 
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import progettopsw.sitoecommerce.entities.User;
 import progettopsw.sitoecommerce.support.ResponseMessage;
@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class AccountingController {
-
     @Autowired
     private AccountingService accountingService;
 
@@ -27,7 +26,7 @@ public class AccountingController {
     public ResponseEntity create(@RequestBody @Valid User user){
         try{
             User added = accountingService.registerUser(user);
-            return new ResponseEntity(added, HttpStatus.OK);
+            return new ResponseEntity(added, HttpStatus.CREATED);
         }catch(MailUserAlreadyExistsException e){
             return new ResponseEntity(new ResponseMessage("ERROR_MAIL_USER_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST);
         }catch(CodeUserAlreadyExistsException e){
@@ -45,6 +44,7 @@ public class AccountingController {
         accountingService.deleteUser(id);
     }//delete
 
+    @PreAuthorize("hasAuthority('user')")
     @PutMapping("/{id}")
     public ResponseEntity updateCode(@RequestBody String code, @PathVariable String id){
         try {
@@ -55,6 +55,7 @@ public class AccountingController {
         }
     }//updateCode
 
+    @PreAuthorize("hasAuthority('user')")
     @PutMapping("/{id}")
     public ResponseEntity updateEmail(@RequestBody String email, @PathVariable String id){
         try{
@@ -65,6 +66,7 @@ public class AccountingController {
         }
     }//updateEmail
 
+    @PreAuthorize("hasAuthority('user')")
     @PutMapping("/{id}")
     public ResponseEntity updateFirstName(@RequestBody String firstName, @PathVariable String id){
         try{
@@ -75,6 +77,7 @@ public class AccountingController {
         }
     }//updateFirstName
 
+    @PreAuthorize("hasAuthority('user')")
     @PutMapping("/{id}")
     public ResponseEntity updateLastName(@RequestBody String lastName, @PathVariable String id){
         try{
@@ -85,6 +88,7 @@ public class AccountingController {
         }
     }//updateLastName
 
+    @PreAuthorize("hasAuthority('user')")
     @PutMapping("/{id}")
     public ResponseEntity updateTelephoneNumber(@RequestBody String telephoneNumber, @PathVariable String id){
         try{
@@ -95,6 +99,7 @@ public class AccountingController {
         }
     }//updateTelephoneNumber
 
+    @PreAuthorize("hasAuthority('user')")
     @PutMapping("/{id}")
     public ResponseEntity updateAddress(@RequestBody String address, @PathVariable String id){
         try{
@@ -105,6 +110,7 @@ public class AccountingController {
         }
     }//updateAddress
 
+    @PreAuthorize("hasAuthority('user')")
     @PutMapping("/{id}")
     public ResponseEntity updateBirthDate(@RequestBody Date birthDate, @PathVariable String id){
         try{

@@ -32,15 +32,11 @@ public class ProductInPromoService {
     private ProductRepository productRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public ProductInPromo addProductInPromo(String id1, String id2) throws ProductAlreadyInThisPromoException, ProductNotFoundException,
+    public ProductInPromo addProductInPromo(Product product, Promo promo) throws ProductAlreadyInThisPromoException, ProductNotFoundException,
             PromoNotFoundException {
-        int ident1 = Integer.parseInt(id1);
-        int ident2 = Integer.parseInt(id2);
         ProductInPromo result = null;
-        if(promoRepository.existsById(ident1)){
-            if(productRepository.existsById(ident2)){
-                Product product = productRepository.getById(ident2);
-                Promo promo = promoRepository.getById(ident1);
+        if(promoRepository.existsById(promo.getId())){
+            if(productRepository.existsById(product.getId())){
                 if(!productInPromoRepository.existsByProductAndPromo(product, promo)) {
                     ProductInPromo pip = new ProductInPromo();
                     pip.setProduct(product);
@@ -61,22 +57,12 @@ public class ProductInPromoService {
     }//addProductInPromo
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void removeProductFromPromo(String id1, String id2) throws ProductNotInThisPromoException,
-            PromoNotFoundException{
-        int ident1 = Integer.parseInt(id1);
-        int ident2 = Integer.parseInt(id2);
-        if(promoRepository.existsById(ident2)) {
-            Promo promo = promoRepository.getById(ident2);
-            ProductInPromo productInPromo = productInPromoRepository.getById(ident1);
-            if (productInPromoRepository.existsByProductAndPromo(productInPromo.getProduct(), promo)) {
-                promo.getProductsInPromo().remove(productInPromo);
-                productInPromoRepository.delete(productInPromo);
-            } else {
-                throw new ProductNotInThisPromoException();
-            }
-        } else {
-            throw new PromoNotFoundException();
-        }
+    public void removeProductFromPromo(String id){
+        int ident = Integer.parseInt(id);
+        ProductInPromo productInPromo = productInPromoRepository.getById(ident);
+        Promo promo = productInPromo.getPromo();
+        promo.getProductsInPromo().remove(productInPromo);
+        productInPromoRepository.delete(productInPromo);
     }//removeProductFromPromo
 
     @Transactional(readOnly = true)
@@ -112,10 +98,5 @@ public class ProductInPromoService {
             return new ArrayList<>();
         }
     }//showAllProducts
-
-    @Transactional(readOnly = true)
-    public List<ProductInPromo> getProductsByPromo(Promo promo){
-        return productInPromoRepository.advancedSearch(promo, null);
-    }//getProductsByPromo
 
 }//ProductInPromoRepository

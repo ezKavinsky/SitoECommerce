@@ -9,6 +9,7 @@ import progettopsw.sitoecommerce.repositories.*;
 import progettopsw.sitoecommerce.support.exceptions.*;
 
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -124,12 +125,16 @@ public class PurchasingService {
     }//checkExpirationDate
 
     @Transactional(readOnly = true)
-    public List<ProductInPurchase> getProductsByPurchase(Purchase purchase){
+    public List<ProductInPurchase> getProductsByPurchase(String id){
+        int ident = Integer.parseInt(id);
+        Purchase purchase = purchaseRepository.getById(ident);
         return productInPurchaseRepository.advancedSearch(purchase,null);
     }//getProductsInPurchase
 
     @Transactional(readOnly = true)
-    public List<ProductInPromoPurchase> getProductsInPromoByPurchase(Purchase purchase){
+    public List<ProductInPromoPurchase> getProductsInPromoByPurchase(String id){
+        int ident = Integer.parseInt(id);
+        Purchase purchase = purchaseRepository.getById(ident);
         return productInPromoPurchaseRepository.advancedSearch(purchase,null);
     }//getProductInPromoByPurchase
     

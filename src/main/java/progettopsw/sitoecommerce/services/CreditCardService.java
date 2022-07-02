@@ -40,22 +40,12 @@ public class CreditCardService {
     }//addCreditCard
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void removeCreditCard(CreditCard creditCard, String id) throws CreditCardNotFoundException, WrongCreditCardUserException, UserNotFoundException{
-        int ident = Integer.parseInt(id);
-        if(!creditCardRepository.existsByNumber(creditCard.getNumber())){
-            throw new CreditCardNotFoundException();
-        } else {
-            if(userRepository.existsById(ident)){
-                if(userRepository.getById(ident).getCreditCards().contains(creditCard)){
-                    userRepository.getById(ident).getCreditCards().remove(creditCard);
-                    creditCardRepository.delete(creditCard);
-                } else {
-                    throw new WrongCreditCardUserException();
-                }
-            } else {
-                throw new UserNotFoundException();
-            }
-        }
+    public void removeCreditCard(String id1){
+        int ident1 = Integer.parseInt(id1);
+        CreditCard creditCard = creditCardRepository.getById(ident1);
+        User user = creditCard.getUser();
+        user.getCreditCards().remove(creditCard);
+        creditCardRepository.delete(creditCard);
     }//removeCreditCard
 
     @Transactional(readOnly = true)

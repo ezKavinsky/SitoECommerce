@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/products")
 public class ProductsController {
-
     @Autowired
     private ProductService productService;
 
@@ -27,7 +26,7 @@ public class ProductsController {
         }catch(BarCodeAlreadyExistException e){
             return new ResponseEntity(new ResponseMessage("BARCODE_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(new ResponseMessage("Added successful!"),HttpStatus.OK);
+        return new ResponseEntity(new ResponseMessage("Added successful!"),HttpStatus.CREATED);
     }//create
 
     @DeleteMapping("/{id}")
@@ -146,9 +145,9 @@ public class ProductsController {
                                  @RequestParam(value = "sortBy", defaultValue = "id") String sortBy){
         List<Product> result = productService.showAllProducts(pageNumber,pageSize,sortBy);
         if(result.size() <= 0){
-            return new ResponseEntity(new ResponseMessage("No results!"), HttpStatus.OK);
+            return new ResponseEntity(new ResponseMessage("No results!"), HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity(result,HttpStatus.OK);
+        return new ResponseEntity(result,HttpStatus.FOUND);
     }//getAll
 
     @GetMapping
@@ -182,7 +181,7 @@ public class ProductsController {
         if(result.size() <= 0){
             return new ResponseEntity(new ResponseMessage("No results!"), HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity(result,HttpStatus.OK);
+        return new ResponseEntity(result,HttpStatus.FOUND);
     }//getAll
 
 }//ProductsController
