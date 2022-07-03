@@ -9,7 +9,6 @@ import progettopsw.sitoecommerce.repositories.*;
 import progettopsw.sitoecommerce.support.exceptions.*;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -42,6 +41,7 @@ public class PurchasingService {
         for(ProductInPromoPurchase pipp : result.getProductsInPromoPurchase()){
             pipp.setPurchase(result);
             ProductInPromoPurchase justAdded = productInPromoPurchaseRepository.save(pipp);
+            justAdded.setFinalPrice(justAdded.getProductInPromo().getDiscountPrice());
             entityManager.refresh(justAdded);
             Product product = justAdded.getProductInPromo().getProduct();
             int newQuantity = justAdded.getQuantity() - pipp.getQuantity();
@@ -55,6 +55,7 @@ public class PurchasingService {
         for(ProductInPurchase pip : result.getProductsInPurchase()){
             pip.setPurchase(result);
             ProductInPurchase justAdded = productInPurchaseRepository.save(pip);
+            justAdded.setFinalPrice(justAdded.getProduct().getPrice()+justAdded.getProduct().getShippingPrice());
             entityManager.refresh(justAdded); //l'entityManager ripreleva il prodotto a cui adesso è stato assegnato l'id numerico ed ha tutti i campi aggiornati
             Product product = justAdded.getProduct();
             int newQuantity = justAdded.getQuantity() - pip.getQuantity();

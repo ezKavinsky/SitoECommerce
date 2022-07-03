@@ -64,8 +64,9 @@ public class CreditCardService {
     }//showByNumber
 
     @Transactional(readOnly = true)
-    public List<CreditCard> showByUser(User user){
-        return creditCardRepository.findByUser(user);
+    public List<CreditCard> showByUser(String id){
+        int ident = Integer.parseInt(id);
+        return creditCardRepository.findByUser(ident);
     }//showByUser
 
 }//CreditCardService

@@ -44,8 +44,7 @@ public class AccountingController {
         accountingService.deleteUser(id);
     }//delete
 
-    @PreAuthorize("hasAuthority('user')")
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateCode")
     public ResponseEntity updateCode(@RequestBody String code, @PathVariable String id){
         try {
             User updated = accountingService.updateCode(code, id);
@@ -55,8 +54,7 @@ public class AccountingController {
         }
     }//updateCode
 
-    @PreAuthorize("hasAuthority('user')")
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateEmail")
     public ResponseEntity updateEmail(@RequestBody String email, @PathVariable String id){
         try{
             User updated = accountingService.updateEmail(email, id);
@@ -66,8 +64,7 @@ public class AccountingController {
         }
     }//updateEmail
 
-    @PreAuthorize("hasAuthority('user')")
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateFirstName")
     public ResponseEntity updateFirstName(@RequestBody String firstName, @PathVariable String id){
         try{
             User updated = accountingService.updateFirstName(firstName, id);
@@ -77,8 +74,7 @@ public class AccountingController {
         }
     }//updateFirstName
 
-    @PreAuthorize("hasAuthority('user')")
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateLastName")
     public ResponseEntity updateLastName(@RequestBody String lastName, @PathVariable String id){
         try{
             User updated = accountingService.updateLastName(lastName, id);
@@ -88,8 +84,7 @@ public class AccountingController {
         }
     }//updateLastName
 
-    @PreAuthorize("hasAuthority('user')")
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateTelephoneNumber")
     public ResponseEntity updateTelephoneNumber(@RequestBody String telephoneNumber, @PathVariable String id){
         try{
             User updated = accountingService.updateTelephoneNumber(telephoneNumber, id);
@@ -99,8 +94,7 @@ public class AccountingController {
         }
     }//updateTelephoneNumber
 
-    @PreAuthorize("hasAuthority('user')")
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateAddress")
     public ResponseEntity updateAddress(@RequestBody String address, @PathVariable String id){
         try{
             User updated = accountingService.updateAddress(address, id);
@@ -110,8 +104,7 @@ public class AccountingController {
         }
     }//updateAddress
 
-    @PreAuthorize("hasAuthority('user')")
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateBirthDate")
     public ResponseEntity updateBirthDate(@RequestBody Date birthDate, @PathVariable String id){
         try{
             User updated = accountingService.updateBirthDate(birthDate, id);
@@ -121,20 +114,21 @@ public class AccountingController {
         }
     }//updateBirthDate
 
-    @GetMapping
+    @GetMapping("/getByEmail")
     public User getByEmail(@RequestBody String email){
        return accountingService.showUserByEmail(email);
     }//showByEmail
 
-    @GetMapping
+    @GetMapping("/getByCode")
+
     public User getByCode(@RequestBody String code){
         return accountingService.showUserByCode(code);
     }//showByCode
 
-    @GetMapping
-    public List<User> getByAdvancedSearch(@RequestBody String firstName, @RequestBody String lastName, @ RequestBody String telephoneNumber,
-                                              @RequestBody String address, @RequestBody Date startBDate, @RequestBody Date endBdate,
-                                              @RequestBody Date startRDate, @RequestBody Date endRDate) {
+    @GetMapping("/getByAdvancedSearch")
+    public List<User> getByAdvancedSearch( @RequestBody String firstName, @RequestBody String lastName, @RequestBody String telephoneNumber,
+                                           @RequestBody String address, @RequestBody Date startBDate, @RequestBody Date endBdate,
+                                           @RequestBody Date startRDate, @RequestBody Date endRDate) {
         return accountingService.showUsersByAdvancedSearch(firstName, lastName, telephoneNumber, address,
                 startBDate, endBdate, startRDate, endRDate);
     }//getByAdvancedSearch

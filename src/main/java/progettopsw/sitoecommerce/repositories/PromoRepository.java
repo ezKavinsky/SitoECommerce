@@ -1,7 +1,5 @@
 package progettopsw.sitoecommerce.repositories;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,7 +13,6 @@ import java.util.List;
 public interface PromoRepository extends JpaRepository<Promo, Integer> {
 
     Promo findByName(String name);
-    Promo findByContainingProductInPromo(ProductInPromo productInPromo);
 
     @Query("select p from Promo p where (p.startDate >= ?1 or ?1 is null) and (p.endDate <= ?2 or ?2 is null)")
     List<Promo> findByDate(Date startDate, Date endDate);

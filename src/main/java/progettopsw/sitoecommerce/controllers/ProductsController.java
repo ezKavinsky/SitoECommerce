@@ -34,7 +34,7 @@ public class ProductsController {
         productService.removeProduct(id);
     }//delete
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateName")
     public ResponseEntity updateName(@RequestBody String name, @PathVariable String id){
         try{
             Product product = productService.updateName(name, id);
@@ -44,7 +44,7 @@ public class ProductsController {
         }
     }//updateName
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateBrand")
     public ResponseEntity updateBrand(@RequestBody String brand, @PathVariable String id){
         try{
             Product product = productService.updateBrand(brand, id);
@@ -54,7 +54,7 @@ public class ProductsController {
         }
     }//updateBrand
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateBarCode")
     public ResponseEntity updateBarCode(@RequestBody String barCode, @PathVariable String id){
         try{
             Product product = productService.updateBarCode(barCode, id);
@@ -64,7 +64,7 @@ public class ProductsController {
         }
     }//updateName
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateDescription")
     public ResponseEntity updateDescription(@RequestBody String description, @PathVariable String id){
         try{
             Product product = productService.updateDescription(description, id);
@@ -74,7 +74,7 @@ public class ProductsController {
         }
     }//updateDescription
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updatePrice")
     public ResponseEntity updatePrice(@RequestBody float price, @PathVariable String id){
         try{
             Product product = productService.updatePrice(price, id);
@@ -84,7 +84,7 @@ public class ProductsController {
         }
     }//updatePrice
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateQuantity")
     public ResponseEntity updateQuantity(@RequestBody int quantity, @PathVariable String id){
         try{
             Product product = productService.updateQuantity(quantity, id);
@@ -94,7 +94,7 @@ public class ProductsController {
         }
     }//updateQuantity
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateProductionYear")
     public ResponseEntity updateProductionYear(@RequestBody int year, @PathVariable String id){
         try{
             Product product = productService.updateProductionYear(year, id);
@@ -104,7 +104,7 @@ public class ProductsController {
         }
     }//updateProductionYear
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateShippingPrice")
     public ResponseEntity updateShippingPrice(@RequestBody float price, @PathVariable String id){
         try{
             Product product = productService.updateShippingPrice(price, id);
@@ -114,7 +114,7 @@ public class ProductsController {
         }
     }//updateShippingPrice
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateFreeShipping")
     public ResponseEntity updateFreeShipping(@RequestBody boolean cond, @PathVariable String id){
         try{
             Product product = productService.updateFreeShipping(cond, id);
@@ -124,7 +124,7 @@ public class ProductsController {
         }
     }//updateFreeShipping
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/updateScore")
     public ResponseEntity updateScore(@RequestBody float score, @PathVariable String id){
         try{
             Product product = productService.updateScore(score, id);
@@ -150,16 +150,10 @@ public class ProductsController {
         return new ResponseEntity(result,HttpStatus.FOUND);
     }//getAll
 
-    @GetMapping
-    public List<Product> getByAdvancedSearch(@RequestParam(value = "name", defaultValue = "null") String name,
-                                              @RequestParam(value = "brand", defaultValue = "null") String brand,
-                                              @RequestParam(value = "lowPrice", defaultValue = "null") int lowPrice,
-                                              @RequestParam(value = "highPrice", defaultValue = "null") int highPrice,
-                                              @RequestParam(value = "lowYear", defaultValue = "null") int lowYear,
-                                              @RequestParam(value = "highYear", defaultValue = "null") int highYear,
-                                              @RequestParam(value = "freeShipping", defaultValue = "null") boolean freeShipping,
-                                              @RequestParam(value = "lowScore", defaultValue = "null") int lowScore,
-                                              @RequestParam(value = "highScore", defaultValue = "null") int highScore){
+    @GetMapping("/advancedSearch")
+    public List<Product> getByAdvancedSearch(@RequestBody String name, @RequestBody String brand, @RequestBody int lowPrice, @RequestBody int highPrice,
+                                              @RequestBody int lowYear, @RequestBody int highYear, @RequestBody boolean freeShipping,
+                                              @RequestBody int lowScore, @RequestBody int highScore){
         return productService.showProductsByAdvancedSearch(name, brand, lowPrice, highPrice, lowYear, highYear, freeShipping, lowScore, highScore);
     }//getAll
 
@@ -182,6 +176,6 @@ public class ProductsController {
             return new ResponseEntity(new ResponseMessage("No results!"), HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity(result,HttpStatus.FOUND);
-    }//getAll
+    }//getByAdvancedPagedSearch
 
 }//ProductsController

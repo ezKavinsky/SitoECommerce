@@ -55,17 +55,13 @@ public class ReviewService {
     }//addReview
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void removeReview(String id) throws ReviewNotFoundException{
+    public void removeReview(String id){
         int ident = Integer.parseInt(id);
-        if(reviewRepository.existsById(ident)){
-            Review review = reviewRepository.getById(ident);
-            review.getProduct().setScore((review.getProduct().getScore()-review.getStars())/review.getProduct().getReviews().size()-1);
-            review.getProduct().getReviews().remove(review);
-            review.getUser().getReviews().remove(review);
-            reviewRepository.delete(review);
-        } else {
-            throw new ReviewNotFoundException();
-        }
+        Review review = reviewRepository.getById(ident);
+        review.getProduct().setScore((review.getProduct().getScore()-review.getStars())/review.getProduct().getReviews().size()-1);
+        review.getProduct().getReviews().remove(review);
+        review.getUser().getReviews().remove(review);
+        reviewRepository.delete(review);
     }//removeReview
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)

@@ -34,7 +34,7 @@ public class ProductsInPromoController {
         } catch(PromoNotFoundException e) {
             return new ResponseEntity(new ResponseMessage("ERROR_PROMO_NOT_FOUND"), HttpStatus.BAD_REQUEST);
         }
-    }//create
+    }//add
 
     @DeleteMapping("/{id}")
     public void remove(@PathVariable String id){
@@ -55,13 +55,12 @@ public class ProductsInPromoController {
             return new ResponseEntity(new ResponseMessage("No results!"), HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity(result,HttpStatus.FOUND);
-    }//getAll
+    }//getAllPaged
 
-    @GetMapping
-    public List<ProductInPromo> getByAdvancedSearch(@RequestParam(value = "promo", defaultValue = "null") Promo promo,
-                                             @RequestParam(value = "product", defaultValue = "null") Product product){
+    @GetMapping("/advancedSearch")
+    public List<ProductInPromo> getByAdvancedSearch(@RequestBody Promo promo, @RequestBody Product product){
         return productInPromoService.showProductsInPromoByAdvancedSearch(promo, product);
-    }//getAll
+    }//getByAdvancedSearch
 
     @GetMapping("/advancedPaged")
     public ResponseEntity getByAdvancedPagedSearch(@RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
@@ -74,6 +73,6 @@ public class ProductsInPromoController {
             return new ResponseEntity(new ResponseMessage("No results!"), HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity(result,HttpStatus.FOUND);
-    }//getAll
+    }//getByAdvancedPagedSearch
 
 }//ProductsInPromoController

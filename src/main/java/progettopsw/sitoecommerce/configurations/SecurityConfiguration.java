@@ -22,9 +22,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
         http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers( "/check/simple").permitAll()
-                .antMatchers( "/users/**").permitAll()
-                .antMatchers("/products/**").permitAll()
-                .antMatchers( "/purchases/**").permitAll()
+                .antMatchers("/products/paged").permitAll()
+                .antMatchers("/products/advancedPaged").permitAll()
+                .antMatchers("/productsInPromo/paged").permitAll()
+                .antMatchers("/productsInPromo/advancedPaged").permitAll()
+                .antMatchers("/promos/**").permitAll()
                 .anyRequest().authenticated().and().oauth2ResourceServer().jwt().jwtAuthenticationConverter(new JwtAuthenticationConverter());
     }//configure
 
@@ -39,6 +41,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
         configuration.addAllowedMethod("GET");
         configuration.addAllowedMethod("POST");
         configuration.addAllowedMethod("PUT");
+        configuration.addAllowedMethod("DELETE");
         source.registerCorsConfiguration("/**",configuration);
         return new CorsFilter(source);
     }

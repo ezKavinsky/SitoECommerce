@@ -23,7 +23,7 @@ public class PromotingController {
     @GetMapping("/{id}")
     public String promo(@PathVariable String id, @RequestParam(value = "name") String name){
         return promotingService.getPromoName(id);
-    }
+    }//promo
 
     @PostMapping
     public ResponseEntity create(@Valid @RequestBody Promo promo){
@@ -40,7 +40,7 @@ public class PromotingController {
         promotingService.removePromo(id);
     }//delete
 
-    @GetMapping
+    @GetMapping("/{id}/getProducts")
     public List<ProductInPromo> getProducts(@PathVariable String id) throws PromoNotFoundException{
         try {
             return promotingService.getProductsInPromo(id);
@@ -49,7 +49,7 @@ public class PromotingController {
         }
     }//getProducts
 
-    @GetMapping("/products")
+    @GetMapping("/{id}/products")
     public ResponseEntity getProductsPaged(@PathVariable String id, @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
                                            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
                                            @RequestParam(value = "sortBy", defaultValue = "id") String sortBy){
