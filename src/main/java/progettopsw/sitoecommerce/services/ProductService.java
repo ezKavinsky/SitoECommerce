@@ -214,4 +214,10 @@ public class ProductService {
         return productRepository.findByBarCode(barCode);
     }
 
+    @Transactional(readOnly = true)
+    public Product getProduct(String id){
+        int ident = Integer.parseInt(id);
+        return productRepository.getById(ident);
+    }//getProduct
+
 }//ProductService

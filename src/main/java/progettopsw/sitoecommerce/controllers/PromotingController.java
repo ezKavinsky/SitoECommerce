@@ -21,8 +21,8 @@ public class PromotingController {
     private PromotingService promotingService;
 
     @GetMapping("/{id}")
-    public String promo(@PathVariable String id, @RequestParam(value = "name") String name){
-        return promotingService.getPromoName(id);
+    public Promo getPromo(@PathVariable String id){
+        return promotingService.getPromo(id);
     }//promo
 
     @PostMapping

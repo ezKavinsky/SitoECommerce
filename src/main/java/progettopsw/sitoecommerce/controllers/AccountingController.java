@@ -3,7 +3,6 @@ package progettopsw.sitoecommerce.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import progettopsw.sitoecommerce.entities.User;
 import progettopsw.sitoecommerce.support.ResponseMessage;
@@ -114,16 +113,10 @@ public class AccountingController {
         }
     }//updateBirthDate
 
-    @GetMapping("/getByEmail")
-    public User getByEmail(@RequestBody String email){
-       return accountingService.showUserByEmail(email);
-    }//showByEmail
-
-    @GetMapping("/getByCode")
-
-    public User getByCode(@RequestBody String code){
-        return accountingService.showUserByCode(code);
-    }//showByCode
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable String id){
+       return accountingService.getUser(id);
+    }//getUser
 
     @GetMapping("/getByAdvancedSearch")
     public List<User> getByAdvancedSearch( @RequestBody String firstName, @RequestBody String lastName, @RequestBody String telephoneNumber,

@@ -178,4 +178,9 @@ public class ProductsController {
         return new ResponseEntity(result,HttpStatus.FOUND);
     }//getByAdvancedPagedSearch
 
+    @GetMapping("/{id}")
+    public Product getProduct(@PathVariable String id){
+        return productService.getProduct(id);
+    }//getProduct
+
 }//ProductsController

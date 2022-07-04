@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import progettopsw.sitoecommerce.entities.CreditCard;
 import progettopsw.sitoecommerce.services.CreditCardService;
 import progettopsw.sitoecommerce.support.ResponseMessage;
-import progettopsw.sitoecommerce.support.exceptions.CreditCardExpiredException;
 import progettopsw.sitoecommerce.support.exceptions.CreditCardNotFoundException;
 import progettopsw.sitoecommerce.support.exceptions.CreditCardNumberAlreadyExistsException;
 import progettopsw.sitoecommerce.support.exceptions.UserNotFoundException;
@@ -29,10 +28,8 @@ public class CreditCardController {
             return new ResponseEntity(result, HttpStatus.CREATED);
         }catch(CreditCardNumberAlreadyExistsException e){
             return new ResponseEntity(new ResponseMessage("ERROR_CREDIT_CARD_NUMBER_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST);
-        } catch(CreditCardNotFoundException e){
+        } catch(CreditCardNotFoundException e) {
             return new ResponseEntity(new ResponseMessage("ERROR_CREDIT_CARD_NOT_FOUND"), HttpStatus.BAD_REQUEST);
-        }catch(CreditCardExpiredException e){
-            return new ResponseEntity(new ResponseMessage("ERROR_CREDIT_CARD_EXPIRED"), HttpStatus.BAD_REQUEST);
         }catch(UserNotFoundException e){
             return new ResponseEntity(new ResponseMessage("ERROR_USER_NOT_FOUND"), HttpStatus.BAD_REQUEST);
         }
@@ -43,9 +40,9 @@ public class CreditCardController {
         creditCardService.removeCreditCard(id);
     }//remove
 
-    @GetMapping("/getByNumber")
-    public CreditCard getByNumber(@RequestBody String number){
-        return creditCardService.showByNumber(number);
+    @GetMapping("/{id}")
+    public CreditCard getCreditCard(@PathVariable String id){
+        return creditCardService.getCreditCard(id);
     }//getByNumber
 
     @GetMapping

@@ -21,14 +21,11 @@ public class CreditCardService {
     private UserRepository userRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public CreditCard addCreditCard(CreditCard creditCard, String id) throws CreditCardNumberAlreadyExistsException, UserNotFoundException, CreditCardExpiredException, CreditCardNotFoundException {
+    public CreditCard addCreditCard(CreditCard creditCard, String id) throws CreditCardNumberAlreadyExistsException, UserNotFoundException, CreditCardNotFoundException {
         CreditCard result;
         int ident = Integer.parseInt(id);
         if(creditCardRepository.existsByNumber(creditCard.getNumber())) {
             throw new CreditCardNumberAlreadyExistsException();
-        }
-        if (isExpired(creditCardRepository.getById(creditCard.getId()))){
-            throw new CreditCardExpiredException();
         }
         if(userRepository.existsById(ident)){
             userRepository.getById(ident).getCreditCards().add(creditCard);
@@ -62,6 +59,12 @@ public class CreditCardService {
     public CreditCard showByNumber(String number){
         return creditCardRepository.findByNumber(number);
     }//showByNumber
+
+    @Transactional(readOnly = true)
+    public CreditCard getCreditCard(String id){
+        int ident =Integer.parseInt(id);
+        return creditCardRepository.getById(ident);
+    }//getCreditCard
 
     @Transactional(readOnly = true)
     public List<CreditCard> showByUser(String id){

@@ -6,13 +6,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/ecommerce
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL82Dialect
-
-server:
-  #ssl
-    #key-store-password: password_certificate
-    #key-store-type: PKCS12
-    #key-store: /home/debian/ssl-cert/certificate.p12
-  port: '8080'
-
-#security:
-  #require-ssl: 'true'
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://dev-.....okta.com/oauth2/default
+  server:
+    port: '8080'

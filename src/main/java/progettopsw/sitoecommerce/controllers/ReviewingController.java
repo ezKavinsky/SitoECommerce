@@ -93,4 +93,9 @@ public class ReviewingController {
         return new ResponseEntity(result,HttpStatus.FOUND);
     }//getByAdvancedPagedSearch
 
+    @GetMapping("/{id}")
+    public Review getReview(@PathVariable String id){
+        return reviewService.getReview(id);
+    }//getReview
+
 }//ReviewingController

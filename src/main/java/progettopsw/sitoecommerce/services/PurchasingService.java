@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import progettopsw.sitoecommerce.entities.*;
 import progettopsw.sitoecommerce.repositories.*;
 import progettopsw.sitoecommerce.support.exceptions.*;
@@ -30,10 +31,7 @@ public class PurchasingService {
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public Purchase addPurchase(Purchase purchase) throws QuantityProductUnavailableException,
-            CreditCardNotFoundException, CreditCardExpiredException, PurchaseAlreadyExistsException {
-        if(isExpired(purchase.getCreditCard())){
-            throw new CreditCardExpiredException();
-        }
+            CreditCardNotFoundException, PurchaseAlreadyExistsException {
         if(purchaseRepository.existsById(purchase.getId())){
             throw new PurchaseAlreadyExistsException();
         }
@@ -70,73 +68,69 @@ public class PurchasingService {
     }//addPurchase
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void cancelPurchase(String id) throws  PurchaseAlreadyShippedException, PurchaseNotFoundException{
+    public void cancelPurchase(String id) throws  PurchaseAlreadyShippedException{
         int ident = Integer.parseInt(id);
-        if(purchaseRepository.existsById(ident)){
-            Purchase purchase = purchaseRepository.getById(ident);
-            if(!purchase.isShipped()){
-                for(ProductInPurchase pip : purchase.getProductsInPurchase()){
-                    Product product = pip.getProduct();
-                    product.setQuantity(product.getQuantity()+pip.getQuantity());
-                    entityManager.refresh(product);
-                    productInPurchaseRepository.delete(pip);
-                }
-                for(ProductInPromoPurchase pipp : purchase.getProductsInPromoPurchase()){
-                    Product product = pipp.getProductInPromo().getProduct();
-                    entityManager.refresh(product);
-                    product.setQuantity(product.getQuantity()+pipp.getQuantity());
-                    productInPromoPurchaseRepository.delete(pipp);
-                }
-                purchaseRepository.delete(purchase);
-            } else {
-                throw new PurchaseAlreadyShippedException();
+        Purchase purchase = purchaseRepository.getById(ident);
+        if(!purchase.isShipped()){
+            for(ProductInPurchase pip : purchase.getProductsInPurchase()){
+                Product product = pip.getProduct();
+                product.setQuantity(product.getQuantity()+pip.getQuantity());
+                entityManager.refresh(product);
+                productInPurchaseRepository.delete(pip);
             }
+            for(ProductInPromoPurchase pipp : purchase.getProductsInPromoPurchase()){
+                Product product = pipp.getProductInPromo().getProduct();
+                entityManager.refresh(product);
+                product.setQuantity(product.getQuantity()+pipp.getQuantity());
+                productInPromoPurchaseRepository.delete(pipp);
+            }
+            purchaseRepository.delete(purchase);
         } else {
-            throw new PurchaseNotFoundException();
+            throw new PurchaseAlreadyShippedException();
         }
     }//removePurchase
 
     @Transactional(readOnly = true)
-    public List<Purchase> getPurchaseByUser(User user) throws UserNotFoundException {
-        if ( !userRepository.existsById(user.getId())){
+    public List<Purchase> getPurchaseByUser(String id) throws UserNotFoundException {
+        int ident = Integer.parseInt(id);
+        if ( !userRepository.existsById(ident)){
             throw new UserNotFoundException();
         }
+        User user = userRepository.getById(ident);
         return purchaseRepository.findByBuyer(user);
     }//getPurchaseByUser
 
     @Transactional(readOnly = true)
-    public List<Purchase> getPurchaseByAdvancedSearch(User user, Date startDate, Date endDate, boolean shipped) throws UserNotFoundException, DateWrongRangeException{
-        if ( !userRepository.existsById(user.getId())){
+    public List<Purchase> getPurchaseByAdvancedSearch(@PathVariable String id, Date startDate, Date endDate, boolean shipped) throws UserNotFoundException, DateWrongRangeException{
+        int ident = Integer.parseInt(id);
+        if ( !userRepository.existsById(ident)){
             throw new UserNotFoundException();
         }
         if ( startDate.compareTo(endDate) >=0 ){
             throw new DateWrongRangeException();
         }
+        User user = userRepository.getById(ident);
         return purchaseRepository.advancedSearch(startDate,endDate,user,shipped);
     }//getPurchaseByAdvancedSearch
-
-    @Transactional(readOnly = true)
-    public boolean isExpired(CreditCard creditCard) throws CreditCardNotFoundException {
-        if(!creditCardRepository.existsByNumber(creditCard.getNumber())){
-            throw new CreditCardNotFoundException();
-        } else {
-            Calendar now = Calendar.getInstance();
-            return (now.YEAR - creditCard.getExpirationYear() >= 0) && (now.MONTH - creditCard.getExpirationMonth() >= 0);
-        }
-    }//checkExpirationDate
 
     @Transactional(readOnly = true)
     public List<ProductInPurchase> getProductsByPurchase(String id){
         int ident = Integer.parseInt(id);
         Purchase purchase = purchaseRepository.getById(ident);
-        return productInPurchaseRepository.advancedSearch(purchase,null);
+        return purchase.getProductsInPurchase();
     }//getProductsInPurchase
 
     @Transactional(readOnly = true)
     public List<ProductInPromoPurchase> getProductsInPromoByPurchase(String id){
         int ident = Integer.parseInt(id);
         Purchase purchase = purchaseRepository.getById(ident);
-        return productInPromoPurchaseRepository.advancedSearch(purchase,null);
+        return purchase.getProductsInPromoPurchase();
     }//getProductInPromoByPurchase
-    
+
+    @Transactional(readOnly = true)
+    public Purchase getPurchase(String id){
+        int ident = Integer.parseInt(id);
+        return purchaseRepository.getById(ident);
+    }//getPurchase
+
 }//PurchasingService

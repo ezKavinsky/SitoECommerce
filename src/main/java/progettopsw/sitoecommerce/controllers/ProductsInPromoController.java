@@ -75,4 +75,9 @@ public class ProductsInPromoController {
         return new ResponseEntity(result,HttpStatus.FOUND);
     }//getByAdvancedPagedSearch
 
+    @GetMapping("/{id}")
+    public ProductInPromo getProductInPromo(@PathVariable String id){
+        return productInPromoService.getProductInPromo(id);
+    }//getProductInPromo
+
 }//ProductsInPromoController

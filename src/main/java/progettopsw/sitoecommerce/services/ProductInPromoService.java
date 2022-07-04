@@ -16,7 +16,6 @@ import progettopsw.sitoecommerce.repositories.ProductRepository;
 import progettopsw.sitoecommerce.repositories.PromoRepository;
 import progettopsw.sitoecommerce.support.exceptions.ProductAlreadyInThisPromoException;
 import progettopsw.sitoecommerce.support.exceptions.ProductNotFoundException;
-import progettopsw.sitoecommerce.support.exceptions.ProductNotInThisPromoException;
 import progettopsw.sitoecommerce.support.exceptions.PromoNotFoundException;
 
 import java.util.ArrayList;
@@ -98,5 +97,11 @@ public class ProductInPromoService {
             return new ArrayList<>();
         }
     }//showAllProducts
+
+    @Transactional(readOnly = true)
+    public ProductInPromo getProductInPromo(String id){
+        int ident = Integer.parseInt(id);
+        return productInPromoRepository.getById(ident);
+    }//getProductInPromo
 
 }//ProductInPromoRepository

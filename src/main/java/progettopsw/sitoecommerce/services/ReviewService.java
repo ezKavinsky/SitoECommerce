@@ -125,4 +125,10 @@ public class ReviewService {
         }
     }//showReviewsByAdvancedSearch
 
+    @Transactional(readOnly = true)
+    public Review getReview(String id){
+        int ident = Integer.parseInt(id);
+        return reviewRepository.getById(ident);
+    }//getReview
+
 }//ReviewService
