@@ -60,6 +60,4 @@ public class PromotingController {
         return new ResponseEntity(result, HttpStatus.FOUND);
     }//getProductsPaged
 
-
-
 }//PromotingController

@@ -80,7 +80,7 @@ public class PromotingService {
     }//getProductsInPromo
 
     @Transactional(readOnly = true)
-    public Promo getPromo(String  id){
+    public Promo getPromo(String id){
         int ident = Integer.parseInt(id);
         return promoRepository.getById(ident);
     }//getPromoName

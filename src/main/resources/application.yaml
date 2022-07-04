@@ -20,3 +20,7 @@ server:
 
 keycloak:
   resource: ecommerce-flutter
+  auth-server-url: http://localhost:8080/auth
+  realm: store
+  public-client: false
+  principal-attribute: preferred_username
