@@ -22,10 +22,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
         http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers( "/check/simple").permitAll()
-                .antMatchers("/products/paged").permitAll()
-                .antMatchers("/products/advancedPaged").permitAll()
-                .antMatchers("/productsInPromo/paged").permitAll()
-                .antMatchers("/productsInPromo/advancedPaged").permitAll()
+                .antMatchers("/products/**").permitAll()
+                .antMatchers("/productsInPromo/**").permitAll()
                 .antMatchers("/promos/**").permitAll()
                 .anyRequest().authenticated().and().oauth2ResourceServer().jwt().jwtAuthenticationConverter(new JwtAuthenticationConverter());
     }//configure
