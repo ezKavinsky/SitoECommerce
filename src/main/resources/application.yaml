@@ -10,8 +10,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8080/realms/store/protocol/openid-connect/certs
-          issuer-uri: http://localhost:8080/realms/store
+          jwk-set-uri: http://localhost:8080/auth/realms/store/protocol/openid-connect/certs
+          issuer-uri: http://localhost:8080/auth/realms/store
   application:
     name: ecommerce-API
 
@@ -19,8 +19,8 @@ server:
   port: '8080'
 
 keycloak:
-  resource: ecommerce-flutter
-  auth-server-url: http://localhost:8080/auth
+  resource: store-flutter
+  auth-server-url: http://localhost:8080
   realm: store
-  public-client: false
+  public-client: true
   principal-attribute: preferred_username

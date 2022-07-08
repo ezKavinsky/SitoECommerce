@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
-    @Value("{keycloak.resource}")
+    @Value("${keycloak.resource}")
     private String CLIENT_NAME;
 
     @Override

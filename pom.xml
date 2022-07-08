@@ -113,6 +113,11 @@
             <artifactId>keycloak-core</artifactId>
             <version>13.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-admin-client</artifactId>
+            <version>18.0.0</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -159,4 +164,5 @@
         </plugins>
     </build>
 
+    <packaging>jar</packaging>
 </project>

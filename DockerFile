@@ -1,0 +1,4 @@
+FROM openjdk:11 as build
+EXPOSE 8080
+ADD /target/SitoECommerce-0.0.1-SNAPSHOT.jar SitoECommerce-0.0.1-SNAPSHOT.jar
+ENTRYPOINT ["java", "-jar", "SitoECommerce-0.0.1-SNAPSHOT.jar"]

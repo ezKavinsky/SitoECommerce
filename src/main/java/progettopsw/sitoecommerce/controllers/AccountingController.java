@@ -10,6 +10,7 @@ import progettopsw.sitoecommerce.support.exceptions.CodeUserAlreadyExistsExcepti
 import progettopsw.sitoecommerce.support.exceptions.MailUserAlreadyExistsException;
 import progettopsw.sitoecommerce.services.AccountingService;
 import progettopsw.sitoecommerce.support.exceptions.UserNotFoundException;
+import progettopsw.sitoecommerce.support.authentication.addUsersKeycloak;
 
 import javax.validation.Valid;
 import java.util.Date;
@@ -24,6 +25,7 @@ public class AccountingController {
     @PostMapping
     public ResponseEntity create(@RequestBody @Valid User user){
         try{
+            new addUsersKeycloak(user.getEmail(), "aaaa", user.getLastName());
             User added = accountingService.registerUser(user);
             return new ResponseEntity(added, HttpStatus.CREATED);
         }catch(MailUserAlreadyExistsException e){

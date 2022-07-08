@@ -1,6 +1,6 @@
 package progettopsw.sitoecommerce.support.authentication;
 
-/*import org.keycloak.OAuth2Constants;
+import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -16,19 +16,24 @@ import java.util.Arrays;
 import java.util.Collections;
 
 
-public class main {
+public class addUsersKeycloak {
+    static String email;
+    String lastName;
+    static String password;
 
+    public addUsersKeycloak(String email, String password, String lastName){
+        this.email = email;
+        this.password = password;
+        this.lastName = lastName;
+    }
 
     public static void main(String[] args) {
-        String usernameAdmin = "";
-        String passwordAdmin = "";
-        String clientName = "";
-        String role = "";
-        String[] email = {"email@email.it", "email@email.it"}
-        String[] lastName = {"cai", "kddm"};
-        String[] password = {"pw1", "pw2"};
-        String serverUrl = "";
-        String realm = "";
+        String usernameAdmin = "salvatore";
+        String passwordAdmin = "piattaforme2022";
+        String clientName = "store-flutter";
+        String role = "admin";
+        String serverUrl = "http://localhost:8080";
+        String realm = "store";
         String clientId = clientName;
         String clientSecret = "";
 
@@ -42,12 +47,10 @@ public class main {
                 .password(passwordAdmin)
                 .build();
 
-        for (int i = 0; i < email.length; i++) {
-            // Define user
             UserRepresentation user = new UserRepresentation();
             user.setEnabled(true);
-            user.setUsername(email[i]);
-            user.setEmail(email[i]);
+            user.setUsername(email);
+            user.setEmail(email);
 
             user.setAttributes(Collections.singletonMap("origin", Arrays.asList("demo")));
 
@@ -57,7 +60,7 @@ public class main {
 
             // Create user (requires manage-users role)
             Response response = usersRessource.create(user);
-            System.out.printf("Repsonse: %s %s%n", response.getStatus(), response.getStatusInfo());
+            System.out.printf("Response: %s %s%n", response.getStatus(), response.getStatusInfo());
             System.out.println(response.getLocation());
             String userId = CreatedResponseUtil.getCreatedId(response);
             System.out.printf("User created with userId: %s%n", userId);
@@ -66,7 +69,7 @@ public class main {
             CredentialRepresentation passwordCred = new CredentialRepresentation();
             passwordCred.setTemporary(true);
             passwordCred.setType(CredentialRepresentation.PASSWORD);
-            passwordCred.setValue(password[i]);
+            passwordCred.setValue(password);
 
             UserResource userResource = usersRessource.get(userId);
 
@@ -81,7 +84,5 @@ public class main {
 
             // Assign client level role to user
             userResource.roles().clientLevel(app1Client.getId()).add(Arrays.asList(userClientRole));
-        }
     }
-}
-*/
+}//addUsersKeycloak
