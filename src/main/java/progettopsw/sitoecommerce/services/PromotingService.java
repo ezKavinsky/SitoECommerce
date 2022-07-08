@@ -85,4 +85,9 @@ public class PromotingService {
         return promoRepository.getById(ident);
     }//getPromoName
 
+    @Transactional(readOnly = true)
+    public List<Promo> showAllPromos(){
+        return promoRepository.findAll();
+    }
+
 }//PromoService

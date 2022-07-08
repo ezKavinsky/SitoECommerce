@@ -60,4 +60,10 @@ public class PromotingController {
         return new ResponseEntity(result, HttpStatus.FOUND);
     }//getProductsPaged
 
+
+    @GetMapping
+    public List<Promo> getAll(){
+        return promotingService.showAllPromos();
+    }//promo
+
 }//PromotingController
