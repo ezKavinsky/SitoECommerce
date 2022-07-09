@@ -16,7 +16,7 @@ spring:
     name: ecommerce-API
 
 server:
-  port: '8080'
+  port: '8081'
 
 keycloak:
   resource: store-flutter
