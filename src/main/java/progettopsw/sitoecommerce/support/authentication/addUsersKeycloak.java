@@ -56,10 +56,10 @@ public class addUsersKeycloak {
 
             // Get realm
             RealmResource realmResource = keycloak.realm(realm);
-            UsersResource usersRessource = realmResource.users();
+            UsersResource usersResource = realmResource.users();
 
             // Create user (requires manage-users role)
-            Response response = usersRessource.create(user);
+            Response response = usersResource.create(user);
             System.out.printf("Response: %s %s%n", response.getStatus(), response.getStatusInfo());
             System.out.println(response.getLocation());
             String userId = CreatedResponseUtil.getCreatedId(response);
@@ -71,7 +71,7 @@ public class addUsersKeycloak {
             passwordCred.setType(CredentialRepresentation.PASSWORD);
             passwordCred.setValue(password);
 
-            UserResource userResource = usersRessource.get(userId);
+            UserResource userResource = usersResource.get(userId);
 
             // Set password credential
             userResource.resetPassword(passwordCred);
