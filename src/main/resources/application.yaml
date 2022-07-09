@@ -10,8 +10,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8080/auth/realms/store/protocol/openid-connect/certs
-          issuer-uri: http://localhost:8080/auth/realms/store
+          jwk-set-uri: http://localhost:8080/realms/store/protocol/openid-connect/certs
+          issuer-uri: http://localhost:8080/realms/store
   application:
     name: ecommerce-API
 
