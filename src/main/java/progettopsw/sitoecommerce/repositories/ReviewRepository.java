@@ -16,12 +16,12 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
     @Query("select r from Review r where (r.title = ?1 or ?1 is null) and (r.stars >= ?2 or ?2 is null) and (r.stars <= ?3 or ?3 is null) " +
-            "and (r.product = ?4 or ?4 is null) and (r.user = ?5 or ?5 is null) and (r.date = ?6 or ?6 is null)")
-    List<Review> advancedSearch(String title, int lowStars, int highStars, Product product, User user, Date date);
+            "and (r.product = ?4 or ?4 is null) and (r.user = ?5 or ?5 is null)")
+    List<Review> advancedSearch(String title, int lowStars, int highStars, Product product, User user);
 
     @Query("select r from Review r where (r.title = ?1 or ?1 is null) and (r.stars >= ?2 or ?2 is null) and (r.stars <= ?3 or ?3 is null) " +
-            "and (r.product = ?4 or ?4 is null) and (r.user = ?5 or ?5 is null) and (r.date = ?7 or ?7 is null)")
-    Page<Review> advancedPagedSearch(String title, int lowStars, int highStars, Product product, User user, Pageable paging, Date date);
+            "and (r.product = ?4 or ?4 is null) and (r.user = ?5 or ?5 is null)")
+    Page<Review> advancedPagedSearch(String title, int lowStars, int highStars, Product product, User user, Pageable paging);
 
 
 }//ReviewRepository

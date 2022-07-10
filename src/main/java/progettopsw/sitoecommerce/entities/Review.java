@@ -25,10 +25,6 @@ public class Review {
     @Column(name = "stars", nullable = false)
     private float stars;
 
-    @Basic
-    @Column(name = "date", nullable = false)
-    private Date date;
-
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "product")
     private Product product;

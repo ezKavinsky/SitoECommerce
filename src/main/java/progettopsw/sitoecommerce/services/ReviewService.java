@@ -108,15 +108,15 @@ public class ReviewService {
     }//updateTitle
 
     @Transactional(readOnly = true)
-    public List<Review>  showReviewsByAdvancedSearch(String title, int lowStars, int highStars, Product product, User user, Date date){
-        return reviewRepository.advancedSearch(title, lowStars, highStars, product, user, date);
+    public List<Review>  showReviewsByAdvancedSearch(String title, int lowStars, int highStars, Product product, User user){
+        return reviewRepository.advancedSearch(title, lowStars, highStars, product, user);
     }//showReviewsByAdvancedSearch
 
     @Transactional(readOnly = true)
     public List<Review>  showReviewsByAdvancedPagedSearch(int pageNumber, int pageSize, String sortBy, String title, int lowStars, int highStars,
-                                                          Product product, User user, Date date){
+                                                          Product product, User user){
         Pageable paging = PageRequest.of(pageNumber,pageSize, Sort.by(sortBy));
-        Page<Review> pagedResult = reviewRepository.advancedPagedSearch(title, lowStars, highStars, product, user, paging, date);
+        Page<Review> pagedResult = reviewRepository.advancedPagedSearch(title, lowStars, highStars, product, user, paging);
         if(pagedResult.hasContent()){
             return pagedResult.getContent();
         }

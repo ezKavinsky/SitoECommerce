@@ -75,7 +75,6 @@ CREATE TABLE review (
     title VARCHAR(50),
     comment VARCHAR(300),
     stars FLOAT,
-    date DATE,
     product INTEGER,
     "user" INTEGER,
     FOREIGN KEY (product) REFERENCES product(id),

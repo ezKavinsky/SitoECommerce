@@ -15,6 +15,7 @@ import progettopsw.sitoecommerce.support.exceptions.ReviewNotFoundException;
 import progettopsw.sitoecommerce.support.exceptions.UserNotFoundException;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 
 @RestController("/reviews")
