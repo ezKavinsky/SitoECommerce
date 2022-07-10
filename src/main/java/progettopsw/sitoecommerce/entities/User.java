@@ -1,4 +1,5 @@
 package progettopsw.sitoecommerce.entities;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
@@ -43,12 +44,14 @@ public class User {
 
     @Basic
     @Column(name = "birth_date", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date birthDate;
 
     @Basic
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "registration_date")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date registrationDate;
 
     @OneToMany(targetEntity = Purchase.class, mappedBy = "buyer", cascade = CascadeType.MERGE)

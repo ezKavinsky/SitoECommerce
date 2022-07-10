@@ -2,6 +2,7 @@ package progettopsw.sitoecommerce.entities;
 
 import lombok.Data;
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @Entity
@@ -24,12 +25,16 @@ public class Review {
     @Column(name = "stars", nullable = false)
     private float stars;
 
-  @ManyToOne(cascade = CascadeType.MERGE)
-  @JoinColumn(name = "product")
+    @Basic
+    @Column(name = "date", nullable = false)
+    private Date date;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "product")
     private Product product;
 
-  @ManyToOne(cascade = CascadeType.MERGE)
-  @JoinColumn(name = "user")
-  private User user;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "user")
+    private User user;
 
 }//Review

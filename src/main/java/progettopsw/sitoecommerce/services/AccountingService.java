@@ -10,8 +10,6 @@ import progettopsw.sitoecommerce.support.exceptions.MailUserAlreadyExistsExcepti
 import progettopsw.sitoecommerce.repositories.UserRepository;
 import progettopsw.sitoecommerce.support.exceptions.UserNotFoundException;
 
-import javax.persistence.EntityManager;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -19,8 +17,6 @@ import java.util.List;
 public class AccountingService {
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private EntityManager entityManager;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public User registerUser(User user) throws MailUserAlreadyExistsException, CodeUserAlreadyExistsException {

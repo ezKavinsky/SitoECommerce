@@ -1,4 +1,6 @@
 spring:
+  jackson:
+    date-format: yyyy-MM-dd
   datasource:
     password: 'admin'
     driver-class-name: org.postgresql.Driver

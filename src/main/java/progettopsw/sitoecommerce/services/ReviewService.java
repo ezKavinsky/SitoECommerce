@@ -19,8 +19,8 @@ import progettopsw.sitoecommerce.support.exceptions.ReviewAlreadyExistsException
 import progettopsw.sitoecommerce.support.exceptions.ReviewNotFoundException;
 import progettopsw.sitoecommerce.support.exceptions.UserNotFoundException;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -108,15 +108,15 @@ public class ReviewService {
     }//updateTitle
 
     @Transactional(readOnly = true)
-    public List<Review>  showReviewsByAdvancedSearch(String title, int lowStars, int highStars, Product product, User user){
-        return reviewRepository.advancedSearch(title, lowStars, highStars, product, user);
+    public List<Review>  showReviewsByAdvancedSearch(String title, int lowStars, int highStars, Product product, User user, Date date){
+        return reviewRepository.advancedSearch(title, lowStars, highStars, product, user, date);
     }//showReviewsByAdvancedSearch
 
     @Transactional(readOnly = true)
     public List<Review>  showReviewsByAdvancedPagedSearch(int pageNumber, int pageSize, String sortBy, String title, int lowStars, int highStars,
-                                                          Product product, User user){
+                                                          Product product, User user, Date date){
         Pageable paging = PageRequest.of(pageNumber,pageSize, Sort.by(sortBy));
-        Page<Review> pagedResult = reviewRepository.advancedPagedSearch(title, lowStars, highStars, product, user, paging);
+        Page<Review> pagedResult = reviewRepository.advancedPagedSearch(title, lowStars, highStars, product, user, paging, date);
         if(pagedResult.hasContent()){
             return pagedResult.getContent();
         }

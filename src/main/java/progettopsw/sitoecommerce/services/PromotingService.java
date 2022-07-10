@@ -8,7 +8,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import progettopsw.sitoecommerce.entities.Product;
 import progettopsw.sitoecommerce.entities.ProductInPromo;
 import progettopsw.sitoecommerce.entities.Promo;
 import progettopsw.sitoecommerce.repositories.ProductInPromoRepository;

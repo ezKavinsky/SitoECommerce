@@ -11,7 +11,7 @@ CREATE TABLE "user" (
     email VARCHAR(90),
     address VARCHAR(150),
     birth_date DATE,
-    registration_date TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP
+    registration_date DATE
 );
 
 CREATE SEQUENCE product_seq;
@@ -49,7 +49,7 @@ CREATE TABLE purchase (
     id INTEGER DEFAULT NEXTVAL ('purchase_seq') PRIMARY KEY,
     buyer INTEGER,
     credit_card INTEGER,
-    purchase_time TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
+    purchase_time DATE,
     total FLOAT,
     shipped BOOLEAN,
     FOREIGN KEY (buyer) REFERENCES "user" (id),
@@ -75,6 +75,7 @@ CREATE TABLE review (
     title VARCHAR(50),
     comment VARCHAR(300),
     stars FLOAT,
+    date DATE,
     product INTEGER,
     "user" INTEGER,
     FOREIGN KEY (product) REFERENCES product(id),

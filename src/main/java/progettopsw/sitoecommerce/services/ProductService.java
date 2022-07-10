@@ -8,12 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import progettopsw.sitoecommerce.entities.Product;
-import progettopsw.sitoecommerce.entities.Promo;
 import progettopsw.sitoecommerce.support.exceptions.BarCodeAlreadyExistException;
 import progettopsw.sitoecommerce.repositories.ProductRepository;
 import progettopsw.sitoecommerce.support.exceptions.ProductNotFoundException;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
