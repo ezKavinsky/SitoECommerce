@@ -12,8 +12,8 @@ public interface CreditCardRepository extends JpaRepository<CreditCard, Integer>
 
     CreditCard findByNumber(String number);
 
-    @Query("select c from CreditCard c where c.user.id = ?1")
-    List<CreditCard> findByUser(int id);
+    @Query("select c from CreditCard c where c.owner.id = ?1")
+    List<CreditCard> findByOwner(int id);
 
     boolean existsByNumber(String number);
 

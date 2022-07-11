@@ -64,6 +64,7 @@ public class Product {
     @ToString.Exclude
     private List<ProductInPurchase> productsInPurchase;
 
+    @JsonIgnore
     @OneToMany(targetEntity = Review.class, mappedBy = "product", cascade = CascadeType.MERGE)
     private List<Review> reviews;
 

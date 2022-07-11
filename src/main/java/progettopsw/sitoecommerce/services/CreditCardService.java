@@ -22,25 +22,25 @@ public class CreditCardService {
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public CreditCard addCreditCard(CreditCard creditCard, String id) throws CreditCardNumberAlreadyExistsException, UserNotFoundException, CreditCardNotFoundException {
-        CreditCard result;
         int ident = Integer.parseInt(id);
         if(creditCardRepository.existsByNumber(creditCard.getNumber())) {
             throw new CreditCardNumberAlreadyExistsException();
         }
         if(userRepository.existsById(ident)){
-            userRepository.getById(ident).getCreditCards().add(creditCard);
-            result = creditCardRepository.save(creditCard);
+            User user = userRepository.getById(ident);
+            creditCard.setOwner(user);
+            user.getCreditCards().add(creditCard);
         } else {
             throw new UserNotFoundException();
         }
-        return result;
+        return creditCardRepository.save(creditCard);
     }//addCreditCard
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void removeCreditCard(String id1){
-        int ident1 = Integer.parseInt(id1);
-        CreditCard creditCard = creditCardRepository.getById(ident1);
-        User user = creditCard.getUser();
+    public void removeCreditCard(String id){
+        int ident = Integer.parseInt(id);
+        CreditCard creditCard = creditCardRepository.getById(ident);
+        User user = creditCard.getOwner();
         user.getCreditCards().remove(creditCard);
         creditCardRepository.delete(creditCard);
     }//removeCreditCard
@@ -69,7 +69,7 @@ public class CreditCardService {
     @Transactional(readOnly = true)
     public List<CreditCard> showByUser(String id){
         int ident = Integer.parseInt(id);
-        return creditCardRepository.findByUser(ident);
+        return creditCardRepository.findByOwner(ident);
     }//showByUser
 
 }//CreditCardService

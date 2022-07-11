@@ -6,10 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import progettopsw.sitoecommerce.entities.User;
 import progettopsw.sitoecommerce.support.ResponseMessage;
-import progettopsw.sitoecommerce.support.exceptions.CodeUserAlreadyExistsException;
-import progettopsw.sitoecommerce.support.exceptions.MailUserAlreadyExistsException;
+import progettopsw.sitoecommerce.support.exceptions.*;
 import progettopsw.sitoecommerce.services.AccountingService;
-import progettopsw.sitoecommerce.support.exceptions.UserNotFoundException;
 import progettopsw.sitoecommerce.support.authentication.addUsersKeycloak;
 
 import javax.validation.Valid;
@@ -121,11 +119,11 @@ public class AccountingController {
     }//getUser
 
     @GetMapping("/getByAdvancedSearch")
-    public List<User> getByAdvancedSearch( @RequestBody String firstName, @RequestBody String lastName, @RequestBody String telephoneNumber,
-                                           @RequestBody String address, @RequestBody Date startBDate, @RequestBody Date endBdate,
-                                           @RequestBody Date startRDate, @RequestBody Date endRDate) {
-        return accountingService.showUsersByAdvancedSearch(firstName, lastName, telephoneNumber, address,
-                startBDate, endBdate, startRDate, endRDate);
+    public List<User> getByAdvancedSearch( @RequestParam (value = "firstName" , defaultValue = "null") String firstName,
+                                           @RequestParam (value = "lastName", defaultValue = "null") String lastName,
+                                           @RequestParam (value = "telephoneNumber", defaultValue = "null") String telephoneNumber,
+                                           @RequestParam (value = "address", defaultValue = "null") String address) {
+        return accountingService.showUsersByAdvancedSearch(firstName, lastName, telephoneNumber, address);
     }//getByAdvancedSearch
 
 }//AccountingController

@@ -2,6 +2,7 @@ package progettopsw.sitoecommerce.controllers;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +17,13 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/creditcards")
+@RequestMapping("users/{id}/creditcards")
 public class CreditCardController {
     @Autowired
     private CreditCardService creditCardService;
 
     @PostMapping
-    public ResponseEntity add(@Valid @RequestBody CreditCard creditCard, @RequestBody String id){
+    public ResponseEntity add(@Valid @RequestBody CreditCard creditCard, @PathVariable String id){
         try{
             CreditCard result = creditCardService.addCreditCard(creditCard,id);
             return new ResponseEntity(result, HttpStatus.CREATED);
@@ -35,18 +36,18 @@ public class CreditCardController {
         }
     }//add
 
-    @DeleteMapping("/{id}")
-    public void remove(@PathVariable String id){
-        creditCardService.removeCreditCard(id);
+    @DeleteMapping("/{id2}")
+    public void remove(@PathVariable String id2){
+        creditCardService.removeCreditCard(id2);
     }//remove
 
-    @GetMapping("/{id}")
-    public CreditCard getCreditCard(@PathVariable String id){
-        return creditCardService.getCreditCard(id);
+    @GetMapping("/{id2}")
+    public CreditCard getCreditCard(@PathVariable String id2){
+        return creditCardService.getCreditCard(id2);
     }//getByNumber
 
     @GetMapping
-    public List<CreditCard> getByUser(@RequestBody String id){
+    public List<CreditCard> getByUser(@PathVariable String id){
         return creditCardService.showByUser(id);
     }//getByUser
 

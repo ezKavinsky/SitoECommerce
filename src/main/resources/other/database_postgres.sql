@@ -39,8 +39,8 @@ CREATE TABLE credit_card (
     expiration_month INTEGER,
     expiration_year INTEGER,
     security_code INTEGER,
-    "user" INTEGER,
-    FOREIGN KEY ("user") REFERENCES "user"(id)
+    owner INTEGER,
+    FOREIGN KEY (owner) REFERENCES "user"(id)
 );
 
 CREATE SEQUENCE purchase_seq;
@@ -76,9 +76,9 @@ CREATE TABLE review (
     comment VARCHAR(300),
     stars FLOAT,
     product INTEGER,
-    "user" INTEGER,
+    buyer INTEGER,
     FOREIGN KEY (product) REFERENCES product(id),
-    FOREIGN KEY ("user") REFERENCES "user" (id)
+    FOREIGN KEY (buyer) REFERENCES "user" (id)
 );
 
 CREATE SEQUENCE promo_seq;

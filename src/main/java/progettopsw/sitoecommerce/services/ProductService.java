@@ -25,6 +25,7 @@ public class ProductService {
         if(productRepository.existsByBarCode(product.getBarCode())){
             throw new BarCodeAlreadyExistException();
         }
+        product.setVersion(1);
         Product result = productRepository.save(product);
         return result;
     }//addProduct
@@ -217,5 +218,10 @@ public class ProductService {
         int ident = Integer.parseInt(id);
         return productRepository.getById(ident);
     }//getProduct
+
+    @Transactional(readOnly = true)
+    public List<Product> showProductsByName(String name) {
+        return productRepository.findByNameContaining(name);
+    }
 
 }//ProductService

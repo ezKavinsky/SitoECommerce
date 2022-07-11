@@ -149,9 +149,10 @@ public class AccountingService {
     }//getUser
 
     @Transactional(readOnly = true)
-    public List<User> showUsersByAdvancedSearch(String firstName, String lastName, String telephoneNumber, String address, Date startBDate, Date endBdate,
-                                                Date startRDate, Date endRDate){
-        return userRepository.advancedSearch(firstName, lastName, telephoneNumber, address, startBDate, endBdate, startRDate, endRDate);
+    public List<User> showUsersByAdvancedSearch(String firstName, String lastName, String telephoneNumber, String address){
+        return userRepository.advancedSearch(firstName, lastName, telephoneNumber, address);
     }//showUsersByAdvancedSearch
+
+
 
 }//AccountingService

@@ -30,9 +30,9 @@ public class CreditCard {
     @JsonIgnore
     private int security_code;
 
-    @ManyToOne
-    @JoinColumn(name = "user")
-    private User user;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "owner")
+    private User owner;
 
     @OneToMany(targetEntity = Purchase.class, mappedBy = "creditCard", cascade = CascadeType.MERGE)
     @JsonIgnore

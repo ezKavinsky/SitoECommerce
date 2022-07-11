@@ -22,11 +22,11 @@ public class ProductsController {
     @PostMapping
     public ResponseEntity create(@RequestBody @Valid Product product) {
         try{
-            productService.addProduct(product);
+            Product result = productService.addProduct(product);
+            return new ResponseEntity(result,HttpStatus.CREATED);
         }catch(BarCodeAlreadyExistException e){
             return new ResponseEntity(new ResponseMessage("BARCODE_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(new ResponseMessage("Added successful!"),HttpStatus.CREATED);
     }//create
 
     @DeleteMapping("/{id}")
@@ -163,13 +163,13 @@ public class ProductsController {
                                                    @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
                                                    @RequestParam(value = "name", defaultValue = "null") String name,
                                                    @RequestParam(value = "brand", defaultValue = "null") String brand,
-                                                   @RequestParam(value = "lowPrice", defaultValue = "null") int lowPrice,
-                                                   @RequestParam(value = "highPrice", defaultValue = "null") int highPrice,
-                                                   @RequestParam(value = "lowYear", defaultValue = "null") int lowYear,
-                                                   @RequestParam(value = "highYear", defaultValue = "null") int highYear,
-                                                   @RequestParam(value = "freeShipping", defaultValue = "null") boolean freeShipping,
-                                                   @RequestParam(value = "lowScore", defaultValue = "null") int lowScore,
-                                                   @RequestParam(value = "highScore", defaultValue = "null") int highScore){
+                                                   @RequestParam(value = "lowPrice", defaultValue = "0") int lowPrice,
+                                                   @RequestParam(value = "highPrice", defaultValue = "5000") int highPrice,
+                                                   @RequestParam(value = "lowYear", defaultValue = "0") int lowYear,
+                                                   @RequestParam(value = "highYear", defaultValue = "2030") int highYear,
+                                                   @RequestParam(value = "freeShipping", defaultValue = "false") boolean freeShipping,
+                                                   @RequestParam(value = "lowScore", defaultValue = "0") int lowScore,
+                                                   @RequestParam(value = "highScore", defaultValue = "5") int highScore){
         List<Product> result = productService.showProductsByAdvancedPagedSearch(pageNumber, pageSize, sortBy, name, brand, lowPrice, highPrice,
                                                                                 lowYear, highYear, freeShipping, lowScore, highScore);
         if(result.size() <= 0){
@@ -182,5 +182,16 @@ public class ProductsController {
     public Product getProduct(@PathVariable String id){
         return productService.getProduct(id);
     }//getProduct
+
+    @GetMapping("/search/by_name")
+    public ResponseEntity getByName(@RequestParam(required = false) String name) {
+        List<Product> result = productService.showProductsByName(name);
+        if ( result.size() <= 0 ) {
+            return new ResponseEntity<>(new ResponseMessage("No results!"), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+
 
 }//ProductsController

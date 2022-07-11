@@ -30,7 +30,7 @@ public class Review {
     private Product product;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "user")
-    private User user;
+    @JoinColumn(name = "buyer")
+    private User buyer;
 
 }//Review

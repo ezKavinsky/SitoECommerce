@@ -10,7 +10,6 @@ import progettopsw.sitoecommerce.repositories.*;
 import progettopsw.sitoecommerce.support.exceptions.*;
 
 import javax.persistence.EntityManager;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -20,8 +19,6 @@ public class PurchasingService {
     private PurchaseRepository purchaseRepository;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private CreditCardRepository creditCardRepository;
     @Autowired
     private ProductInPurchaseRepository productInPurchaseRepository;
     @Autowired
@@ -36,10 +33,12 @@ public class PurchasingService {
             throw new PurchaseAlreadyExistsException();
         }
         Purchase result = purchaseRepository.save(purchase);
+        float total = 0;
         for(ProductInPromoPurchase pipp : result.getProductsInPromoPurchase()){
             pipp.setPurchase(result);
             ProductInPromoPurchase justAdded = productInPromoPurchaseRepository.save(pipp);
             justAdded.setFinalPrice(justAdded.getProductInPromo().getDiscountPrice());
+            total += justAdded.getFinalPrice();
             entityManager.refresh(justAdded);
             Product product = justAdded.getProductInPromo().getProduct();
             int newQuantity = justAdded.getQuantity() - pipp.getQuantity();
@@ -54,6 +53,7 @@ public class PurchasingService {
             pip.setPurchase(result);
             ProductInPurchase justAdded = productInPurchaseRepository.save(pip);
             justAdded.setFinalPrice(justAdded.getProduct().getPrice()+justAdded.getProduct().getShippingPrice());
+            total += justAdded.getFinalPrice();
             entityManager.refresh(justAdded); //l'entityManager ripreleva il prodotto a cui adesso è stato assegnato l'id numerico ed ha tutti i campi aggiornati
             Product product = justAdded.getProduct();
             int newQuantity = justAdded.getQuantity() - pip.getQuantity();
@@ -63,6 +63,7 @@ public class PurchasingService {
             product.setQuantity(newQuantity);
             entityManager.refresh(pip);
         }
+        result.setTotal(total);
         entityManager.refresh(result);
         return result;
     }//addPurchase

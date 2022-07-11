@@ -37,9 +37,9 @@ public class ReviewService {
         Review result;
         if(!reviewRepository.existsById(review.getId())){
             if(productRepository.existsById(review.getProduct().getId())){
-                if(userRepository.existsById(review.getUser().getId())){
+                if(userRepository.existsById(review.getBuyer().getId())){
                     result = reviewRepository.save(review);
-                    result.getUser().getReviews().add(review);
+                    result.getBuyer().getReviews().add(review);
                     result.getProduct().getReviews().add(review);
                     result.getProduct().setScore((result.getProduct().getScore()+result.getStars())/result.getProduct().getReviews().size());
                 } else {
@@ -60,7 +60,7 @@ public class ReviewService {
         Review review = reviewRepository.getById(ident);
         review.getProduct().setScore((review.getProduct().getScore()-review.getStars())/review.getProduct().getReviews().size()-1);
         review.getProduct().getReviews().remove(review);
-        review.getUser().getReviews().remove(review);
+        review.getBuyer().getReviews().remove(review);
         reviewRepository.delete(review);
     }//removeReview
 

@@ -15,7 +15,7 @@ public class CheckController {
     @GetMapping("/simple")
     public ResponseEntity checkSimple(){ return new ResponseEntity( "Check status ok", HttpStatus.OK);}//checkSimple
 
-    @PreAuthorize("hasAuthority('user')")
+    @PreAuthorize("hasAuthority('buyer')")
     @GetMapping("/logged")
     public ResponseEntity checkLogged(){
         return new ResponseEntity("Check status ok, hi " + Utils.getEmail() + "!", HttpStatus.OK);
