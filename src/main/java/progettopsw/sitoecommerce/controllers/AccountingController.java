@@ -118,12 +118,9 @@ public class AccountingController {
        return accountingService.getUser(id);
     }//getUser
 
-    @GetMapping("/getByAdvancedSearch")
-    public List<User> getByAdvancedSearch( @RequestParam (value = "firstName" , defaultValue = "null") String firstName,
-                                           @RequestParam (value = "lastName", defaultValue = "null") String lastName,
-                                           @RequestParam (value = "telephoneNumber", defaultValue = "null") String telephoneNumber,
-                                           @RequestParam (value = "address", defaultValue = "null") String address) {
-        return accountingService.showUsersByAdvancedSearch(firstName, lastName, telephoneNumber, address);
+    @GetMapping("/getByAddress")
+    public List<User> getByAdvancedSearch(@RequestBody String address) {
+        return accountingService.showUsersByAddress(address);
     }//getByAdvancedSearch
 
 }//AccountingController

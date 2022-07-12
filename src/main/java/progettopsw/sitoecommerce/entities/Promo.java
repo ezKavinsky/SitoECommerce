@@ -1,5 +1,6 @@
 package progettopsw.sitoecommerce.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -25,13 +26,15 @@ public class Promo {
 
     @Basic
     @Column(name = "start_date", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
 
     @Basic
     @Column(name = "end_date", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE)
+    @OneToMany(targetEntity = ProductInPromo.class, mappedBy = "promo", cascade = CascadeType.MERGE)
     private List<ProductInPromo> productsInPromo;
 
 }//Promo

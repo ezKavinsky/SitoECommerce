@@ -151,9 +151,15 @@ public class ProductsController {
     }//getAll
 
     @GetMapping("/advancedSearch")
-    public List<Product> getByAdvancedSearch(@RequestBody String name, @RequestBody String brand, @RequestBody int lowPrice, @RequestBody int highPrice,
-                                              @RequestBody int lowYear, @RequestBody int highYear, @RequestBody boolean freeShipping,
-                                              @RequestBody int lowScore, @RequestBody int highScore){
+    public List<Product> getByAdvancedSearch(@RequestParam(value = "name", defaultValue = "prodotto") String name,
+                                             @RequestParam(value = "brand", defaultValue = "brand") String brand,
+                                             @RequestParam(value = "lowPrice", defaultValue = "0.0") float lowPrice,
+                                             @RequestParam(value = "highPrice", defaultValue = "5000.0") float highPrice,
+                                             @RequestParam(value = "lowYear", defaultValue = "2000") int lowYear,
+                                             @RequestParam(value = "highYear", defaultValue = "2022") int highYear,
+                                             @RequestParam(value = "freeShipping", defaultValue = "true") boolean freeShipping,
+                                             @RequestParam(value = "lowScore", defaultValue = "0.0") float lowScore,
+                                             @RequestParam(value = "highScore", defaultValue = "5.0") float highScore){
         return productService.showProductsByAdvancedSearch(name, brand, lowPrice, highPrice, lowYear, highYear, freeShipping, lowScore, highScore);
     }//getAll
 
@@ -161,15 +167,15 @@ public class ProductsController {
     public ResponseEntity getByAdvancedPagedSearch(@RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
                                                    @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
                                                    @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
-                                                   @RequestParam(value = "name", defaultValue = "null") String name,
-                                                   @RequestParam(value = "brand", defaultValue = "null") String brand,
-                                                   @RequestParam(value = "lowPrice", defaultValue = "0") int lowPrice,
-                                                   @RequestParam(value = "highPrice", defaultValue = "5000") int highPrice,
+                                                   @RequestParam(value = "name", defaultValue = "prodotto") String name,
+                                                   @RequestParam(value = "brand", defaultValue = "brand") String brand,
+                                                   @RequestParam(value = "lowPrice", defaultValue = "0") float lowPrice,
+                                                   @RequestParam(value = "highPrice", defaultValue = "5000") float highPrice,
                                                    @RequestParam(value = "lowYear", defaultValue = "0") int lowYear,
-                                                   @RequestParam(value = "highYear", defaultValue = "2030") int highYear,
-                                                   @RequestParam(value = "freeShipping", defaultValue = "false") boolean freeShipping,
-                                                   @RequestParam(value = "lowScore", defaultValue = "0") int lowScore,
-                                                   @RequestParam(value = "highScore", defaultValue = "5") int highScore){
+                                                   @RequestParam(value = "highYear", defaultValue = "2022") int highYear,
+                                                   @RequestParam(value = "freeShipping", defaultValue = "true") boolean freeShipping,
+                                                   @RequestParam(value = "lowScore", defaultValue = "0") float lowScore,
+                                                   @RequestParam(value = "highScore", defaultValue = "5") float highScore){
         List<Product> result = productService.showProductsByAdvancedPagedSearch(pageNumber, pageSize, sortBy, name, brand, lowPrice, highPrice,
                                                                                 lowYear, highYear, freeShipping, lowScore, highScore);
         if(result.size() <= 0){

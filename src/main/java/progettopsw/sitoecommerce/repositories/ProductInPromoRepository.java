@@ -14,11 +14,11 @@ import java.util.List;
 @Repository
 public interface ProductInPromoRepository extends JpaRepository<ProductInPromo, Integer> {
 
-    @Query("select p from ProductInPromo p where (p.promo = ?1 or ?1 is null) and (p.product = ?2 or ?2 is null)")
-    List<ProductInPromo> advancedSearch(Promo promo, Product product);
+    @Query("select p from ProductInPromo p where (p.product.name like concat(?1, '%')or ?1 is null)")
+    List<ProductInPromo> advancedSearch(Product product);
 
-    @Query("select p from ProductInPromo p where (p.promo = ?1 or ?1 is null) and (p.product = ?2 or ?2 is null)")
-    Page<ProductInPromo> advancedPagedSearch(Promo promo, Product product, Pageable paging);
+    @Query("select p from ProductInPromo p where (p.promo = ?1)")
+    Page<ProductInPromo> advancedPagedSearch(Promo promo, Pageable paging);
 
     boolean existsByProductAndPromo(Product product, Promo promo);
 

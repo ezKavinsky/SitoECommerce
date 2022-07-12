@@ -14,18 +14,19 @@ import progettopsw.sitoecommerce.support.exceptions.ProductNotFoundException;
 import progettopsw.sitoecommerce.support.exceptions.PromoNotFoundException;
 
 import javax.validation.Valid;
+import javax.ws.rs.Path;
 import java.util.List;
 
 @RestController
-@RequestMapping("/productsInPromo")
+@RequestMapping("/promos/{id}/productsInPromo")
 public class ProductsInPromoController {
     @Autowired
     private ProductInPromoService productInPromoService;
 
     @PostMapping
-    public ResponseEntity add(@RequestBody @Valid Product product, @RequestBody @Valid Promo promo){
+    public ResponseEntity add(@RequestBody @Valid Product product, @PathVariable String id){
         try{
-            ProductInPromo productInPromo = productInPromoService.addProductInPromo(product,promo);
+            ProductInPromo productInPromo = productInPromoService.addProductInPromo(product,id);
             return new ResponseEntity(productInPromo, HttpStatus.CREATED);
         } catch(ProductAlreadyInThisPromoException e) {
             return new ResponseEntity(new ResponseMessage("ERROR_PRODUCT_ALREADY_IN_THE_PROMOTION"), HttpStatus.BAD_REQUEST);
@@ -36,48 +37,35 @@ public class ProductsInPromoController {
         }
     }//add
 
-    @DeleteMapping("/{id}")
-    public void remove(@PathVariable String id){
-        productInPromoService.removeProductFromPromo(id);
+    @DeleteMapping("/{id2}")
+    public void remove(@PathVariable String id2){
+        productInPromoService.removeProductFromPromo(id2);
     }//remove
-
-    @GetMapping
-    public List<ProductInPromo> getAll(){
-        return productInPromoService.showAllProductsInPromo();
-    }//getAll
 
     @GetMapping("/paged")
     public ResponseEntity getAllPaged(@RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
                                       @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
-                                      @RequestParam(value = "sortBy", defaultValue = "id") String sortBy){
-        List<ProductInPromo> result = productInPromoService.showAllProductsInPromo(pageNumber,pageSize,sortBy);
-        if(result.size() <= 0){
-            return new ResponseEntity(new ResponseMessage("No results!"), HttpStatus.NO_CONTENT);
+                                      @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+                                      @PathVariable String id){
+        try {
+            List<ProductInPromo> result = productInPromoService.showProductsInPromoPaged(pageNumber, pageSize, sortBy, id);
+            if (result.size() <= 0) {
+                return new ResponseEntity(new ResponseMessage("No results!"), HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity(result, HttpStatus.FOUND);
+        }catch(PromoNotFoundException e){
+            return new ResponseEntity(new ResponseMessage("ERROR_PROMO_NOT_FOUND"), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity(result,HttpStatus.FOUND);
     }//getAllPaged
 
-    @GetMapping("/advancedSearch")
-    public List<ProductInPromo> getByAdvancedSearch(@RequestBody Promo promo, @RequestBody Product product){
-        return productInPromoService.showProductsInPromoByAdvancedSearch(promo, product);
+    @GetMapping()
+    public List<ProductInPromo> getByPromo(@PathVariable String id){
+        return productInPromoService.showProductsInPromo(id);
     }//getByAdvancedSearch
 
-    @GetMapping("/advancedPaged")
-    public ResponseEntity getByAdvancedPagedSearch(@RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
-                                                   @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
-                                                   @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
-                                                   @RequestParam(value = "promo", defaultValue = "null") Promo promo,
-                                                   @RequestParam(value = "product", defaultValue = "null") Product product){
-        List<ProductInPromo> result = productInPromoService.showProductsInPromoByAdvancedPagedSearch(pageNumber, pageSize, sortBy, promo, product);
-        if(result.size() <= 0){
-            return new ResponseEntity(new ResponseMessage("No results!"), HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity(result,HttpStatus.FOUND);
-    }//getByAdvancedPagedSearch
-
-    @GetMapping("/{id}")
-    public ProductInPromo getProductInPromo(@PathVariable String id){
-        return productInPromoService.getProductInPromo(id);
+    @GetMapping("/{id2}")
+    public ProductInPromo getProductInPromo(@PathVariable String id2){
+        return productInPromoService.getProductInPromo(id2);
     }//getProductInPromo
 
 }//ProductsInPromoController

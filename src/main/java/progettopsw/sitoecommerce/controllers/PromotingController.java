@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import progettopsw.sitoecommerce.entities.ProductInPromo;
 import progettopsw.sitoecommerce.entities.Promo;
+import progettopsw.sitoecommerce.services.ProductInPromoService;
 import progettopsw.sitoecommerce.services.PromotingService;
 import progettopsw.sitoecommerce.support.ResponseMessage;
 import progettopsw.sitoecommerce.support.exceptions.PromoAlreadyExistsException;
@@ -19,6 +20,8 @@ import java.util.List;
 public class PromotingController {
     @Autowired
     private PromotingService promotingService;
+    @Autowired
+    private ProductInPromoService productInPromoService;
 
     @GetMapping("/{id}")
     public Promo getPromo(@PathVariable String id){
@@ -28,8 +31,8 @@ public class PromotingController {
     @PostMapping
     public ResponseEntity create(@Valid @RequestBody Promo promo){
         try{
-            promotingService.addPromo(promo);
-            return new ResponseEntity(promo, HttpStatus.CREATED);
+            Promo result = promotingService.addPromo(promo);
+            return new ResponseEntity(result, HttpStatus.CREATED);
         } catch(PromoAlreadyExistsException e){
             return new ResponseEntity(new ResponseMessage("ERROR_PROMO_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST);
         }
@@ -40,7 +43,7 @@ public class PromotingController {
         promotingService.removePromo(id);
     }//delete
 
-    @GetMapping("/{id}/getProducts")
+    @GetMapping("/{id}/products")
     public List<ProductInPromo> getProducts(@PathVariable String id) throws PromoNotFoundException{
         try {
             return promotingService.getProductsInPromo(id);
@@ -49,7 +52,7 @@ public class PromotingController {
         }
     }//getProducts
 
-    @GetMapping("/{id}/products")
+    @GetMapping("/{id}/pagedProducts")
     public ResponseEntity getProductsPaged(@PathVariable String id, @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
                                            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
                                            @RequestParam(value = "sortBy", defaultValue = "id") String sortBy){
@@ -62,8 +65,13 @@ public class PromotingController {
 
 
     @GetMapping
-    public List<Promo> getAll(){
+    public List<Promo> getAllPromos(){
         return promotingService.showAllPromos();
     }//promo
+
+    @GetMapping("/getAllProductsInPromos")
+    public List<ProductInPromo> getAllProductsInAllPromos(){
+        return productInPromoService.showAllProductsInPromo();
+    }//getAllProductsInAllPromos
 
 }//PromotingController

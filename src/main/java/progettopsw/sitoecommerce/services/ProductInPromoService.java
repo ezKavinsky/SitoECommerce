@@ -31,18 +31,20 @@ public class ProductInPromoService {
     private ProductRepository productRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public ProductInPromo addProductInPromo(Product product, Promo promo) throws ProductAlreadyInThisPromoException, ProductNotFoundException,
+    public ProductInPromo addProductInPromo(Product product, String id) throws ProductAlreadyInThisPromoException, ProductNotFoundException,
             PromoNotFoundException {
         ProductInPromo result = null;
-        if(promoRepository.existsById(promo.getId())){
+        int ident = Integer.parseInt(id);
+        if(promoRepository.existsById(ident)){
+            Promo promo = promoRepository.getById(ident);
             if(productRepository.existsById(product.getId())){
                 if(!productInPromoRepository.existsByProductAndPromo(product, promo)) {
                     ProductInPromo pip = new ProductInPromo();
                     pip.setProduct(product);
                     pip.setPromo(promo);
+                    promo.getProductsInPromo().add(pip);
                     pip.setDiscountPrice(product.getPrice() - (product.getPrice() * promo.getDiscount()) / 100);
-                    productInPromoRepository.save(pip);
-                    result = pip;
+                    result = productInPromoRepository.save(pip);
                 } else {
                     throw new ProductAlreadyInThisPromoException();
                 }
@@ -70,33 +72,28 @@ public class ProductInPromoService {
     }//showAllProducts
 
     @Transactional(readOnly = true)
-    public List<ProductInPromo> showAllProductsInPromo(int pageNumber, int pageSize, String sortBy){
+    public List<ProductInPromo> showProductsInPromoPaged(int pageNumber, int pageSize, String sortBy,String id) throws PromoNotFoundException{
         Pageable paging = PageRequest.of(pageNumber,pageSize, Sort.by(sortBy));
-        Page<ProductInPromo> pagedResult = productInPromoRepository.findAll(paging);
-        if(pagedResult.hasContent()){
-            return pagedResult.getContent();
-        }
-        else {
-            return new ArrayList<>();
+        int ident = Integer.parseInt(id);
+        if(promoRepository.existsById(ident)) {
+            Promo promo = promoRepository.getById(ident);
+            Page<ProductInPromo> pagedResult = productInPromoRepository.advancedPagedSearch(promo,paging);
+            if (pagedResult.hasContent()) {
+                return pagedResult.getContent();
+            } else {
+                return new ArrayList<>();
+            }
+        } else {
+            throw new PromoNotFoundException();
         }
     }//showAllProducts
 
     @Transactional(readOnly = true)
-    public List<ProductInPromo> showProductsInPromoByAdvancedSearch(Promo promo, Product product) {
-        return productInPromoRepository.advancedSearch(promo, product);
+    public List<ProductInPromo> showProductsInPromo(String id) {
+        int ident = Integer.parseInt(id);
+        return promoRepository.getById(ident).getProductsInPromo();
     }//showAllProducts
 
-    @Transactional(readOnly = true)
-    public List<ProductInPromo> showProductsInPromoByAdvancedPagedSearch(int pageNumber, int pageSize, String sortBy, Promo promo, Product product){
-        Pageable paging = PageRequest.of(pageNumber,pageSize, Sort.by(sortBy));
-        Page<ProductInPromo> pagedResult = productInPromoRepository.advancedPagedSearch(promo, product, paging);
-        if(pagedResult.hasContent()){
-            return pagedResult.getContent();
-        }
-        else {
-            return new ArrayList<>();
-        }
-    }//showAllProducts
 
     @Transactional(readOnly = true)
     public ProductInPromo getProductInPromo(String id){

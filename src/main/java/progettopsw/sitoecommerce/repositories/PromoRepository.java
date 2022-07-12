@@ -13,7 +13,6 @@ public interface PromoRepository extends JpaRepository<Promo, Integer> {
 
     Promo findByName(String name);
 
-    @Query("select p from Promo p where (p.startDate >= ?1 or ?1 is null) and (p.endDate <= ?2 or ?2 is null)")
-    List<Promo> findByDate(Date startDate, Date endDate);
+
 
 }//PromoRepository

@@ -1,6 +1,7 @@
 package progettopsw.sitoecommerce.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 import progettopsw.sitoecommerce.entities.User;
 
@@ -14,9 +15,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     User findByCode(String code);
     boolean existsByEmail(String email);
     boolean existsByCode(String code);
-
-    @Query("select u from User u where (u.firstName = ?1 or ?1 is null) and (u.lastName = ?2 or ?2 is null) and (u.telephoneNumber = ?3 or ?3 is null)" +
-            "and (u.address = ?4 or ?4 is null)")
-    List<User> advancedSearch(String firstName, String lastName, String telephoneNumber, String address);
+    List<User> findByAddress(String address);
 
 }//UserRepository

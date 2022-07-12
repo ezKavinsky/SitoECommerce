@@ -15,6 +15,7 @@ import progettopsw.sitoecommerce.repositories.PromoRepository;
 import progettopsw.sitoecommerce.support.exceptions.*;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -31,12 +32,6 @@ public class PromotingService {
         Promo result = null;
         if(!promoRepository.existsById(promo.getId())){
             result = promoRepository.save(promo);
-            for(ProductInPromo pip : result.getProductsInPromo()){
-                pip.setPromo(result);
-                pip.setDiscountPrice(pip.getProduct().getPrice()-(pip.getProduct().getPrice()* result.getDiscount())/100);
-                productInPromoRepository.save(pip);
-            }
-            entityManager.refresh(result);
         } else {
             throw new PromoAlreadyExistsException();
         }
@@ -69,7 +64,7 @@ public class PromotingService {
         int ident = Integer.parseInt(id);
         Promo promo = promoRepository.getById(ident);
         Pageable paging = PageRequest.of(pageNumber,pageSize, Sort.by(sortBy));
-        Page<ProductInPromo> pagedResult = productInPromoRepository.advancedPagedSearch(promo, null, paging);
+        Page<ProductInPromo> pagedResult = productInPromoRepository.advancedPagedSearch(promo, paging);
         if(pagedResult.hasContent()){
             return pagedResult.getContent();
         }

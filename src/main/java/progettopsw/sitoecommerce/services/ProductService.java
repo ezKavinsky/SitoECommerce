@@ -189,14 +189,14 @@ public class ProductService {
     }//showAllProducts
 
     @Transactional(readOnly = true)
-    public List<Product> showProductsByAdvancedSearch(String name, String brand, int lowPrice, int highPrice, int lowYear, int highYear,
-                                                      boolean shipping, int lowScore, int highScore){
+    public List<Product> showProductsByAdvancedSearch(String name, String brand, float lowPrice, float highPrice, int lowYear, int highYear,
+                                                      boolean shipping, float lowScore, float highScore){
         return productRepository.advancedSearch(name, brand, lowPrice, highPrice, lowYear, highYear, shipping, lowScore, highScore);
     }//showAllProducts
 
     @Transactional(readOnly = true)
-    public List<Product> showProductsByAdvancedPagedSearch(int pageNumber, int pageSize, String sortBy, String name, String brand, int lowPrice,
-                                                      int highPrice, int lowYear, int highYear, boolean freeShipping, int lowScore, int highScore){
+    public List<Product> showProductsByAdvancedPagedSearch(int pageNumber, int pageSize, String sortBy, String name, String brand, float lowPrice,
+                                                      float highPrice, int lowYear, int highYear, boolean freeShipping, float lowScore, float highScore){
         Pageable paging = PageRequest.of(pageNumber,pageSize, Sort.by(sortBy));
         Page<Product> pagedResult = productRepository.advancedPagedSearch(name, brand, lowPrice, highPrice, lowYear, highYear, freeShipping, lowScore,
                 highScore, paging);

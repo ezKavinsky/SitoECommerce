@@ -15,10 +15,9 @@ public class ProductInPromo {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "related_promo")
     @JsonIgnore
-    @ToString.Exclude
     private Promo promo;
 
     @ManyToOne
