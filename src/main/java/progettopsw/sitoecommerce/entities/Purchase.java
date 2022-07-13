@@ -1,5 +1,6 @@
 package progettopsw.sitoecommerce.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -20,6 +21,7 @@ public class Purchase {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "purchase_time")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date purchaseTime;
 
     @ManyToOne
@@ -33,7 +35,7 @@ public class Purchase {
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.MERGE)
     private List<ProductInPurchase> productsInPurchase;
 
-    @OneToMany(mappedBy = "productInPromo", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.MERGE)
     private List<ProductInPromoPurchase> productsInPromoPurchase;
 
     @Basic

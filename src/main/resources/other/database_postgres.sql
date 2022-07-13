@@ -113,3 +113,12 @@ CREATE TABLE product_in_promo_purchase (
     FOREIGN KEY (related_purchase) REFERENCES purchase (id),
     FOREIGN KEY (product_in_promo) REFERENCES product_in_promo (id)
 );
+
+CREATE SEQUENCE cart_seq;
+
+CREATE TABLE cart(
+    id INTEGER DEFAULT NEXTVAL('cart_seq') PRIMARY KEY,
+    buyer INTEGER,
+    total FLOAT,
+    FOREIGN KEY (buyer) REFERENCES "user"(id)
+);

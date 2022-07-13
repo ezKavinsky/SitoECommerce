@@ -1,5 +1,6 @@
 package progettopsw.sitoecommerce.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -10,6 +11,7 @@ import progettopsw.sitoecommerce.repositories.*;
 import progettopsw.sitoecommerce.support.exceptions.*;
 
 import javax.persistence.EntityManager;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -27,12 +29,15 @@ public class PurchasingService {
     private ProductInPromoPurchaseRepository productInPromoPurchaseRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Purchase addPurchase(Purchase purchase) throws QuantityProductUnavailableException,
-            CreditCardNotFoundException, PurchaseAlreadyExistsException {
+    public Purchase addPurchase(Purchase purchase, String id)
+            throws QuantityProductUnavailableException, CreditCardNotFoundException, PurchaseAlreadyExistsException {
         if(purchaseRepository.existsById(purchase.getId())){
             throw new PurchaseAlreadyExistsException();
         }
+        int ident = Integer.parseInt(id);
         Purchase result = purchaseRepository.save(purchase);
+        result.setPurchaseTime(Date.from(Instant.now()));
+        result.setShipped(false);
         float total = 0;
         for(ProductInPromoPurchase pipp : result.getProductsInPromoPurchase()){
             pipp.setPurchase(result);
@@ -64,6 +69,9 @@ public class PurchasingService {
             entityManager.refresh(pip);
         }
         result.setTotal(total);
+        result.setBuyer(userRepository.getById(ident));
+        result.setCreditCard(userRepository.getById(ident).getCreditCards().get(1));
+        userRepository.getById(ident).getPurchases().add(result);
         entityManager.refresh(result);
         return result;
     }//addPurchase

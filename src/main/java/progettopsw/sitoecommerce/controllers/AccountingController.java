@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import progettopsw.sitoecommerce.entities.Cart;
+import progettopsw.sitoecommerce.entities.Product;
 import progettopsw.sitoecommerce.entities.User;
+import progettopsw.sitoecommerce.services.CartService;
 import progettopsw.sitoecommerce.support.ResponseMessage;
 import progettopsw.sitoecommerce.support.exceptions.*;
 import progettopsw.sitoecommerce.services.AccountingService;
-import progettopsw.sitoecommerce.support.authentication.addUsersKeycloak;
 
 import javax.validation.Valid;
 import java.util.Date;
@@ -19,12 +21,14 @@ import java.util.List;
 public class AccountingController {
     @Autowired
     private AccountingService accountingService;
+    @Autowired
+    private CartService cartService;
 
     @PostMapping
     public ResponseEntity create(@RequestBody @Valid User user){
         try{
-            new addUsersKeycloak(user.getEmail(), "aaaa", user.getLastName());
             User added = accountingService.registerUser(user);
+            cartService.create(added.getId());
             return new ResponseEntity(added, HttpStatus.CREATED);
         }catch(MailUserAlreadyExistsException e){
             return new ResponseEntity(new ResponseMessage("ERROR_MAIL_USER_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST);
@@ -40,6 +44,7 @@ public class AccountingController {
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable String id){
+        cartService.delete(Integer.parseInt(id));
         accountingService.deleteUser(id);
     }//delete
 

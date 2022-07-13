@@ -4,9 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import progettopsw.sitoecommerce.entities.ProductInPromoPurchase;
-import progettopsw.sitoecommerce.entities.ProductInPurchase;
-import progettopsw.sitoecommerce.entities.Purchase;
+import progettopsw.sitoecommerce.entities.*;
 import progettopsw.sitoecommerce.services.PurchasingService;
 import progettopsw.sitoecommerce.support.ResponseMessage;
 import progettopsw.sitoecommerce.support.exceptions.*;
@@ -18,29 +16,29 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/purchases")
+@RequestMapping("/users/{id}/purchases")
 public class PurchasingController {
     @Autowired
     private PurchasingService purchasingService;
 
     @PostMapping
-    public ResponseEntity add(@Valid @RequestBody Purchase purchase){
+    public ResponseEntity add(@Valid @RequestBody Purchase purchase, @PathVariable String id){
         try{
-            Purchase result = purchasingService.addPurchase(purchase);
+            Purchase result = purchasingService.addPurchase(purchase, id);
             return new ResponseEntity(result, HttpStatus.CREATED);
         }catch(QuantityProductUnavailableException e){
             return new ResponseEntity(new ResponseMessage("ERROR_QUANTITY_PRODUCT_UNAVAILABLE"), HttpStatus.BAD_REQUEST);
         }catch(CreditCardNotFoundException e) {
             return new ResponseEntity(new ResponseMessage("ERROR_CREDIT_CARD_NOT_FOUND"), HttpStatus.BAD_REQUEST);
-        }catch (PurchaseAlreadyExistsException e){
+        }catch (PurchaseAlreadyExistsException e) {
             return new ResponseEntity(new ResponseMessage("ERROR_PURCHASE_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST);
         }
     }//add
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable String id){
+    @DeleteMapping("/{id2}")
+    public void delete(@PathVariable String id2){
         try {
-            purchasingService.cancelPurchase(id);
+            purchasingService.cancelPurchase(id2);
         }catch(PurchaseAlreadyShippedException e){}
     }//delete
 
@@ -53,10 +51,10 @@ public class PurchasingController {
         }
     }//getAll
 
-    @GetMapping("/{id}/advancedSearch")
-    public List<Purchase> getByAdvancedSearch(@PathVariable String id, @RequestBody Date startDate, Date endDate, boolean shipped){
+    @GetMapping("/{id2}/advancedSearch")
+    public List<Purchase> getByAdvancedSearch(@PathVariable String id2, @RequestBody Date startDate, Date endDate, boolean shipped){
         try{
-            List<Purchase> result = purchasingService.getPurchaseByAdvancedSearch(id, startDate, endDate, shipped);
+            List<Purchase> result = purchasingService.getPurchaseByAdvancedSearch(id2, startDate, endDate, shipped);
             if(result.size() <= 0){
                 return new ArrayList<>();
             } else {
@@ -69,17 +67,17 @@ public class PurchasingController {
         }
     }//getByAdvancedSearch
 
-    @GetMapping("/{id}/products")
+    @GetMapping("/{id2}/products")
     public List<ProductInPurchase> getProducts(@PathVariable String id){
         return purchasingService.getProductsByPurchase(id);
     }//getProducts
 
-    @GetMapping("/{id}/productsInPromo")
+    @GetMapping("/{id2}/productsInPromo")
     public List<ProductInPromoPurchase> getProductsInPromo(@PathVariable String id){
         return purchasingService.getProductsInPromoByPurchase(id);
     }//getProducts
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id2}")
     public Purchase getPurchase(@PathVariable String id){
         return purchasingService.getPurchase(id);
     }//getPurchase
