@@ -11,7 +11,8 @@ CREATE TABLE "user" (
     email VARCHAR(90),
     address VARCHAR(150),
     birth_date DATE,
-    registration_date DATE
+    registration_date DATE,
+    cart_id INTEGER
 );
 
 CREATE SEQUENCE product_seq;
@@ -28,7 +29,9 @@ CREATE TABLE product (
     free_shipping BOOLEAN,
     shipping_price FLOAT,
     score FLOAT,
-    version VARCHAR(500)
+    version VARCHAR(500),
+    related_cart INTEGER,
+    FOREIGN KEY (related_cart) REFERENCES cart (id)
 );
 
 CREATE SEQUENCE credit_card_seq;
@@ -98,8 +101,10 @@ CREATE TABLE product_in_promo (
     related_promo INTEGER,
     product INTEGER,
     discount_price FLOAT,
+    related_cart INTEGER,
     FOREIGN KEY (related_promo) REFERENCES promo(id),
-    FOREIGN KEY (product) REFERENCES product(id)
+    FOREIGN KEY (product) REFERENCES product(id),
+    FOREIGN KEY (related_cart) REFERENCES  cart (id)
 );
 
 CREATE SEQUENCE product_in_promo_purchase_seq;
@@ -120,5 +125,5 @@ CREATE TABLE cart(
     id INTEGER DEFAULT NEXTVAL('cart_seq') PRIMARY KEY,
     buyer INTEGER,
     total FLOAT,
-    FOREIGN KEY (buyer) REFERENCES "user"(id)
+    FOREIGN KEY (buyer) REFERENCES "user" (id)
 );

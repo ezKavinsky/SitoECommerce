@@ -51,6 +51,7 @@ public class PurchasingService {
                 throw new QuantityProductUnavailableException();
             }
             product.setQuantity(newQuantity);
+            product.setCart(null);
             entityManager.refresh(pipp);
         }
         entityManager.refresh(result);
@@ -66,6 +67,7 @@ public class PurchasingService {
                 throw new QuantityProductUnavailableException();
             }
             product.setQuantity(newQuantity);
+            product.setCart(null);
             entityManager.refresh(pip);
         }
         result.setTotal(total);

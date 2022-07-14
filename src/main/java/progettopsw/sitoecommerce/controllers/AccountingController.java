@@ -5,13 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import progettopsw.sitoecommerce.entities.Cart;
-import progettopsw.sitoecommerce.entities.Product;
 import progettopsw.sitoecommerce.entities.User;
 import progettopsw.sitoecommerce.services.CartService;
 import progettopsw.sitoecommerce.support.ResponseMessage;
 import progettopsw.sitoecommerce.support.exceptions.*;
 import progettopsw.sitoecommerce.services.AccountingService;
 
+import javax.persistence.EntityManager;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
@@ -23,12 +23,15 @@ public class AccountingController {
     private AccountingService accountingService;
     @Autowired
     private CartService cartService;
+    @Autowired
+    private EntityManager entityManager;
 
     @PostMapping
     public ResponseEntity create(@RequestBody @Valid User user){
         try{
             User added = accountingService.registerUser(user);
-            cartService.create(added.getId());
+            Cart cart = cartService.create(added.getId());
+            added.setCart(cart);
             return new ResponseEntity(added, HttpStatus.CREATED);
         }catch(MailUserAlreadyExistsException e){
             return new ResponseEntity(new ResponseMessage("ERROR_MAIL_USER_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST);

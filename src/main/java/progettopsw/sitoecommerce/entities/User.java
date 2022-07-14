@@ -67,4 +67,8 @@ public class User {
     @JsonIgnore
     private List<CreditCard> creditCards;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
+
 }//User

@@ -10,4 +10,5 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
 
     @Query("select c from Cart c where c.buyer.id = ?1")
     Cart findByBuyer(int id);
+
 }//CartRepository

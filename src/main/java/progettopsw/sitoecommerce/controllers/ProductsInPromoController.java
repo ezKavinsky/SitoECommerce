@@ -15,6 +15,7 @@ import progettopsw.sitoecommerce.support.exceptions.PromoNotFoundException;
 
 import javax.validation.Valid;
 import javax.ws.rs.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController

@@ -2,9 +2,10 @@ package progettopsw.sitoecommerce.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -23,6 +24,11 @@ public class ProductInPromo {
     @ManyToOne
     @JoinColumn(name = "product")
     private Product product;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "related_cart")
+    @JsonIgnore
+    private Cart cart;
 
     @Basic
     @Column(name = "discount_price", nullable = false)

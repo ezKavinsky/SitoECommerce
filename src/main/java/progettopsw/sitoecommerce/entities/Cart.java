@@ -1,7 +1,9 @@
 package progettopsw.sitoecommerce.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -13,15 +15,15 @@ public class Cart {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @OneToOne
-    @Column(name = "buyer", nullable = false)
+    @OneToOne(mappedBy = "cart")
+    @JsonIgnore
     private User buyer;
 
-    @OneToMany(targetEntity = Product.class, cascade =CascadeType.MERGE)
-    private List<Product> products;
+    @OneToMany(targetEntity = Product.class, cascade = CascadeType.MERGE, mappedBy = "cart")
+    private List<Product> products = new ArrayList<>();
 
-    @OneToMany(targetEntity = ProductInPromo.class, cascade =CascadeType.MERGE)
-    private List<ProductInPromo> productsInPromo;
+    @OneToMany(targetEntity = ProductInPromo.class, cascade = CascadeType.MERGE, mappedBy = "cart")
+    private List<ProductInPromo> productsInPromo = new ArrayList<>();
 
     @Basic
     @Column(name = "total", nullable = false)

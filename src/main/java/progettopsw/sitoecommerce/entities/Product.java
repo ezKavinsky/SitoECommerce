@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -63,6 +64,11 @@ public class Product {
     @JsonIgnore
     @ToString.Exclude
     private List<ProductInPurchase> productsInPurchase;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "related_cart")
+    @JsonIgnore
+    private Cart cart;
 
     @JsonIgnore
     @OneToMany(targetEntity = Review.class, mappedBy = "product", cascade = CascadeType.MERGE)
