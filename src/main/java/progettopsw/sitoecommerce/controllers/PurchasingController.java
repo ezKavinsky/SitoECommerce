@@ -22,16 +22,14 @@ public class PurchasingController {
     private PurchasingService purchasingService;
 
     @PostMapping
-    public ResponseEntity add(@Valid @RequestBody Purchase purchase, @PathVariable String id){
+    public ResponseEntity add(@Valid @RequestBody Cart cart, @PathVariable String id){
         try{
-            Purchase result = purchasingService.addPurchase(purchase, id);
+            Purchase result = purchasingService.addPurchase(cart, id);
             return new ResponseEntity(result, HttpStatus.CREATED);
         }catch(QuantityProductUnavailableException e){
             return new ResponseEntity(new ResponseMessage("ERROR_QUANTITY_PRODUCT_UNAVAILABLE"), HttpStatus.BAD_REQUEST);
         }catch(CreditCardNotFoundException e) {
             return new ResponseEntity(new ResponseMessage("ERROR_CREDIT_CARD_NOT_FOUND"), HttpStatus.BAD_REQUEST);
-        }catch (PurchaseAlreadyExistsException e) {
-            return new ResponseEntity(new ResponseMessage("ERROR_PURCHASE_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST);
         }
     }//add
 

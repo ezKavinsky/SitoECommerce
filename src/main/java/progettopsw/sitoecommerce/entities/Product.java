@@ -65,10 +65,10 @@ public class Product {
     @ToString.Exclude
     private List<ProductInPurchase> productsInPurchase;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "related_cart")
+    @OneToMany(targetEntity = ProductInCart.class, mappedBy = "product", cascade = CascadeType.MERGE)
     @JsonIgnore
-    private Cart cart;
+    @ToString.Exclude
+    private List<ProductInCart> productsInCarts;
 
     @JsonIgnore
     @OneToMany(targetEntity = Review.class, mappedBy = "product", cascade = CascadeType.MERGE)

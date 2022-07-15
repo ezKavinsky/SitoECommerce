@@ -4,20 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import progettopsw.sitoecommerce.entities.Cart;
-import progettopsw.sitoecommerce.entities.Product;
-import progettopsw.sitoecommerce.entities.ProductInPromo;
-import progettopsw.sitoecommerce.entities.User;
-import progettopsw.sitoecommerce.repositories.CartRepository;
-import progettopsw.sitoecommerce.repositories.ProductInPromoRepository;
-import progettopsw.sitoecommerce.repositories.ProductRepository;
-import progettopsw.sitoecommerce.repositories.UserRepository;
+import progettopsw.sitoecommerce.entities.*;
+import progettopsw.sitoecommerce.repositories.*;
 import progettopsw.sitoecommerce.support.exceptions.ProductInPromoNotFoundException;
 import progettopsw.sitoecommerce.support.exceptions.ProductNotFoundException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class CartService {
@@ -29,6 +21,10 @@ public class CartService {
     private ProductRepository productRepository;
     @Autowired
     private ProductInPromoRepository productInPromoRepository;
+    @Autowired
+    private ProductInCartRepository productInCartRepository;
+    @Autowired
+    private ProductInPromoInCartRepository productInPromoInCartRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public Cart create(int id) {
@@ -44,12 +40,17 @@ public class CartService {
     }//delete
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Cart addProduct(Product product,String id) throws ProductNotFoundException{
+    public Cart addProduct(Product product,int quantity, String id) throws ProductNotFoundException{
         if(productRepository.existsById(product.getId())){
             int ident = Integer.parseInt(id);
+            ProductInCart pic = new ProductInCart();
+            pic.setCart(cartRepository.findByBuyer(ident));
+            pic.setQuantity(quantity);
+            pic.setProduct(product);
+            ProductInCart justAdded = productInCartRepository.save(pic);
             Cart result = cartRepository.findByBuyer(ident);
-            result.getProducts().add(product);
-            productRepository.getById(product.getId()).setCart(result);
+            result.getProducts().add(justAdded);
+            productRepository.getById(product.getId()).getProductsInCarts().add(justAdded);
             return result;
         } else {
             throw new ProductNotFoundException();
@@ -57,12 +58,17 @@ public class CartService {
     }//addProduct
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Cart addProductInPromo(ProductInPromo productInPromo, String id) throws ProductInPromoNotFoundException {
+    public Cart addProductInPromo(ProductInPromo productInPromo, int quantity, String id) throws ProductInPromoNotFoundException {
         if(productInPromoRepository.existsById(productInPromo.getId())){
             int ident = Integer.parseInt(id);
+            ProductInPromoInCart pipic = new ProductInPromoInCart();
+            pipic.setCart(cartRepository.findByBuyer(ident));
+            pipic.setQuantity(quantity);
+            pipic.setProductInPromo(productInPromo);
+            ProductInPromoInCart justAdded = productInPromoInCartRepository.save(pipic);
             Cart result = cartRepository.findByBuyer(ident);
-            result.getProductsInPromo().add(productInPromo);
-            productInPromoRepository.getById(productInPromo.getId()).setCart(result);
+            result.getProductsInPromo().add(justAdded);
+            productInPromoRepository.getById(productInPromo.getId()).getProductsInPromoInCarts().add(justAdded);
             return result;
         } else {
             throw new ProductInPromoNotFoundException();
@@ -70,27 +76,29 @@ public class CartService {
     }//addProductInPromo
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void removeProduct(String id, Product product){
+    public void removeProduct(String id, ProductInCart productInCart){
         int ident = Integer.parseInt(id);
-        cartRepository.findByBuyer(ident).getProducts().remove(product);
-        productRepository.getById(product.getId()).setCart(null);
+        cartRepository.findByBuyer(ident).getProducts().remove(productInCart);
+        productRepository.getById(productInCart.getProduct().getId()).getProductsInCarts().remove(productInCart);
+        productInCartRepository.delete(productInCart);
     }//removeProduct
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void removeProductInPromo(String id, ProductInPromo productInPromo){
+    public void removeProductInPromo(String id, ProductInPromoInCart productInPromoInCart){
         int ident = Integer.parseInt(id);
-        cartRepository.findByBuyer(ident).getProductsInPromo().remove(productInPromo);
-        productRepository.getById(productInPromo.getId()).setCart(null);
+        cartRepository.findByBuyer(ident).getProductsInPromo().remove(productInPromoInCart);
+        productInPromoRepository.getById(productInPromoInCart.getProductInPromo().getId()).getProductsInPromoInCarts().remove(productInPromoInCart);
+        productInPromoInCartRepository.delete(productInPromoInCart);
     }//removeProduct
 
     @Transactional(readOnly = true)
-    public List<Product> getProducts(String id){
+    public List<ProductInCart> getProducts(String id){
         int ident = Integer.parseInt(id);
         return cartRepository.findByBuyer(ident).getProducts();
     }//getProducts
 
     @Transactional(readOnly = true)
-    public List<ProductInPromo> getProductsInPromo(String id){
+    public List<ProductInPromoInCart> getProductsInPromo(String id){
         int ident = Integer.parseInt(id);
         return cartRepository.findByBuyer(ident).getProductsInPromo();
     }//getProductsInPromo

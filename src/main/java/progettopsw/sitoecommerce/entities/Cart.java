@@ -20,10 +20,10 @@ public class Cart {
     private User buyer;
 
     @OneToMany(targetEntity = Product.class, cascade = CascadeType.MERGE, mappedBy = "cart")
-    private List<Product> products = new ArrayList<>();
+    private List<ProductInCart> products = new ArrayList<>();
 
     @OneToMany(targetEntity = ProductInPromo.class, cascade = CascadeType.MERGE, mappedBy = "cart")
-    private List<ProductInPromo> productsInPromo = new ArrayList<>();
+    private List<ProductInPromoInCart> productsInPromo = new ArrayList<>();
 
     @Basic
     @Column(name = "total", nullable = false)

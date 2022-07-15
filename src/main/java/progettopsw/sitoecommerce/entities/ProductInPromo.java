@@ -2,9 +2,9 @@ package progettopsw.sitoecommerce.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,10 +25,15 @@ public class ProductInPromo {
     @JoinColumn(name = "product")
     private Product product;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "related_cart")
+    @OneToMany(targetEntity = ProductInPromoPurchase.class, mappedBy = "productInPromo", cascade = CascadeType.MERGE)
     @JsonIgnore
-    private Cart cart;
+    @ToString.Exclude
+    private List<ProductInPromoPurchase> productsInPromoPurchase;
+
+    @OneToMany(targetEntity = ProductInPromoInCart.class, mappedBy = "productInPromo", cascade = CascadeType.MERGE)
+    @JsonIgnore
+    @ToString.Exclude
+    private List<ProductInPromoInCart> productsInPromoInCarts;
 
     @Basic
     @Column(name = "discount_price", nullable = false)

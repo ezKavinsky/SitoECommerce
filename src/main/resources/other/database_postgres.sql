@@ -29,9 +29,7 @@ CREATE TABLE product (
     free_shipping BOOLEAN,
     shipping_price FLOAT,
     score FLOAT,
-    version VARCHAR(500),
-    related_cart INTEGER,
-    FOREIGN KEY (related_cart) REFERENCES cart (id)
+    version VARCHAR(500)
 );
 
 CREATE SEQUENCE credit_card_seq;
@@ -101,10 +99,8 @@ CREATE TABLE product_in_promo (
     related_promo INTEGER,
     product INTEGER,
     discount_price FLOAT,
-    related_cart INTEGER,
     FOREIGN KEY (related_promo) REFERENCES promo(id),
-    FOREIGN KEY (product) REFERENCES product(id),
-    FOREIGN KEY (related_cart) REFERENCES  cart (id)
+    FOREIGN KEY (product) REFERENCES product(id)
 );
 
 CREATE SEQUENCE product_in_promo_purchase_seq;
@@ -126,4 +122,26 @@ CREATE TABLE cart(
     buyer INTEGER,
     total FLOAT,
     FOREIGN KEY (buyer) REFERENCES "user" (id)
+);
+
+CREATE SEQUENCE product_in_cart_seq;
+
+CREATE TABLE product_in_cart (
+  id INTEGER DEFAULT NEXTVAL('product_in_cart_seq') PRIMARY KEY,
+  related_cart INTEGER,
+  product INTEGER,
+  quantity INTEGER,
+  FOREIGN KEY (related_cart) REFERENCES cart(id),
+  FOREIGN KEY (product) REFERENCES product(id)
+);
+
+CREATE SEQUENCE product_in_promo_in_cart_seq;
+
+CREATE TABLE product_in_promo_in_cart (
+    id INTEGER DEFAULT NEXTVAL('product_in_promo_in_cart_seq') PRIMARY KEY,
+    related_cart INTEGER,
+    product_in_promo INTEGER,
+    quantity INTEGER,
+    FOREIGN KEY (related_cart) REFERENCES cart(id),
+    FOREIGN KEY (product_in_promo) REFERENCES product_in_promo(id)
 );

@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import progettopsw.sitoecommerce.entities.Cart;
-import progettopsw.sitoecommerce.entities.Product;
-import progettopsw.sitoecommerce.entities.ProductInPromo;
+import progettopsw.sitoecommerce.entities.*;
 import progettopsw.sitoecommerce.services.CartService;
 import progettopsw.sitoecommerce.support.ResponseMessage;
 import progettopsw.sitoecommerce.support.exceptions.ProductInPromoNotFoundException;
@@ -14,7 +12,6 @@ import progettopsw.sitoecommerce.support.exceptions.ProductNotFoundException;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/users/{id}/cart")
@@ -23,9 +20,9 @@ public class CartController  {
     private CartService cartService;
 
     @PostMapping("/products")
-    public ResponseEntity addProduct(@PathVariable String id, @Valid @RequestBody Product product){
+    public ResponseEntity addProduct(@PathVariable String id, @Valid @RequestBody Product product, @RequestBody int quantity){
         try{
-            Cart result = cartService.addProduct(product, id);
+            Cart result = cartService.addProduct(product, quantity, id);
             return new ResponseEntity(result, HttpStatus.OK);
         } catch(ProductNotFoundException e){
             return new ResponseEntity(new ResponseMessage("ERROR_PRODUCT_NOT_FOUND"), HttpStatus.BAD_REQUEST);
@@ -33,9 +30,9 @@ public class CartController  {
     }//addProduct
 
     @PostMapping("/productsInPromo")
-    public ResponseEntity addProductInPromo(@PathVariable String id, ProductInPromo productInPromo){
+    public ResponseEntity addProductInPromo(@PathVariable String id, @Valid @RequestBody ProductInPromo productInPromo, @RequestBody int quantity){
         try{
-            Cart result = cartService.addProductInPromo(productInPromo, id);
+            Cart result = cartService.addProductInPromo(productInPromo, quantity, id);
             return new ResponseEntity(result, HttpStatus.OK);
         } catch(ProductInPromoNotFoundException e){
             return new ResponseEntity(new ResponseMessage("ERROR_PRODUCT_IN_PROMO_NOT_FOUND"), HttpStatus.BAD_REQUEST);
@@ -43,22 +40,22 @@ public class CartController  {
     }//addProduct
 
     @DeleteMapping("/products")
-    public void removeProduct(@PathVariable String id, @Valid @RequestBody Product product){
-        cartService.removeProduct(id, product);
+    public void removeProduct(@PathVariable String id, @Valid @RequestBody ProductInCart productInCart){
+        cartService.removeProduct(id, productInCart);
     }//removeProduct
 
     @DeleteMapping("/productsInPromo")
-    public void removeProductInPromo(@PathVariable String id, @Valid @RequestBody ProductInPromo productInPromo){
-        cartService.removeProductInPromo(id, productInPromo);
+    public void removeProductInPromo(@PathVariable String id, @Valid @RequestBody ProductInPromoInCart productInPromoInCart){
+        cartService.removeProductInPromo(id, productInPromoInCart);
     }//removeProduct
 
     @GetMapping("/products")
-    public List<Product> getProducts(@PathVariable String id){
+    public List<ProductInCart> getProducts(@PathVariable String id){
         return cartService.getProducts(id);
     }//getProducts
 
     @GetMapping("/productsInPromo")
-    public List<ProductInPromo> getProductsInPromo(@PathVariable String id){
+    public List<ProductInPromoInCart> getProductsInPromo(@PathVariable String id){
         return cartService.getProductsInPromo(id);
     }//getProductsInPromo
 

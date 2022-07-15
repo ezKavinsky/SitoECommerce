@@ -1,12 +1,12 @@
 package progettopsw.sitoecommerce.services;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import progettopsw.sitoecommerce.entities.*;
+import progettopsw.sitoecommerce.entities.ProductInPromoInCart;
 import progettopsw.sitoecommerce.repositories.*;
 import progettopsw.sitoecommerce.support.exceptions.*;
 
@@ -29,20 +29,21 @@ public class PurchasingService {
     private ProductInPromoPurchaseRepository productInPromoPurchaseRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Purchase addPurchase(Purchase purchase, String id)
-            throws QuantityProductUnavailableException, CreditCardNotFoundException, PurchaseAlreadyExistsException {
-        if(purchaseRepository.existsById(purchase.getId())){
-            throw new PurchaseAlreadyExistsException();
-        }
+    public Purchase addPurchase(Cart cart, String id)
+            throws QuantityProductUnavailableException, CreditCardNotFoundException {
         int ident = Integer.parseInt(id);
-        Purchase result = purchaseRepository.save(purchase);
-        result.setPurchaseTime(Date.from(Instant.now()));
-        result.setShipped(false);
+        Purchase p = new Purchase();
+        p.setPurchaseTime(Date.from(Instant.now()));
+        p.setShipped(false);
+        Purchase result = purchaseRepository.save(p);
         float total = 0;
-        for(ProductInPromoPurchase pipp : result.getProductsInPromoPurchase()){
+        for(ProductInPromoInCart pipic : cart.getProductsInPromo()){
+            ProductInPromoPurchase pipp = new ProductInPromoPurchase();
+            pipp.setProductInPromo(pipic.getProductInPromo());
             pipp.setPurchase(result);
+            pipp.setQuantity(pipic.getQuantity());
             ProductInPromoPurchase justAdded = productInPromoPurchaseRepository.save(pipp);
-            justAdded.setFinalPrice(justAdded.getProductInPromo().getDiscountPrice());
+            justAdded.setFinalPrice(justAdded.getProductInPromo().getDiscountPrice()*justAdded.getQuantity());
             total += justAdded.getFinalPrice();
             entityManager.refresh(justAdded);
             Product product = justAdded.getProductInPromo().getProduct();
@@ -51,14 +52,17 @@ public class PurchasingService {
                 throw new QuantityProductUnavailableException();
             }
             product.setQuantity(newQuantity);
-            product.setCart(null);
             entityManager.refresh(pipp);
+            cart.getProductsInPromo().clear();
         }
         entityManager.refresh(result);
-        for(ProductInPurchase pip : result.getProductsInPurchase()){
+        for(ProductInCart pic : cart.getProducts()){
+            ProductInPurchase pip = new ProductInPurchase();
+            pip.setProduct(pic.getProduct());
             pip.setPurchase(result);
+            pip.setQuantity(pic.getQuantity());
             ProductInPurchase justAdded = productInPurchaseRepository.save(pip);
-            justAdded.setFinalPrice(justAdded.getProduct().getPrice()+justAdded.getProduct().getShippingPrice());
+            justAdded.setFinalPrice((justAdded.getProduct().getPrice()*justAdded.getQuantity())+justAdded.getProduct().getShippingPrice());
             total += justAdded.getFinalPrice();
             entityManager.refresh(justAdded); //l'entityManager ripreleva il prodotto a cui adesso è stato assegnato l'id numerico ed ha tutti i campi aggiornati
             Product product = justAdded.getProduct();
@@ -67,8 +71,8 @@ public class PurchasingService {
                 throw new QuantityProductUnavailableException();
             }
             product.setQuantity(newQuantity);
-            product.setCart(null);
             entityManager.refresh(pip);
+            cart.getProducts().clear();
         }
         result.setTotal(total);
         result.setBuyer(userRepository.getById(ident));
