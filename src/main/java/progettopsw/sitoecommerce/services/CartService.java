@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import progettopsw.sitoecommerce.entities.*;
 import progettopsw.sitoecommerce.repositories.*;
+import progettopsw.sitoecommerce.support.exceptions.ProductInCartNotFoundException;
+import progettopsw.sitoecommerce.support.exceptions.ProductInPromoInCartNotFoundException;
 import progettopsw.sitoecommerce.support.exceptions.ProductInPromoNotFoundException;
 import progettopsw.sitoecommerce.support.exceptions.ProductNotFoundException;
 
@@ -35,20 +37,47 @@ public class CartService {
     }//create
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public Cart clear(String id){
+        int ident = Integer.parseInt(id);
+        Cart result = cartRepository.findByBuyer(ident);
+        if(result.getProducts().size() > 0) {
+            for (ProductInCart pic : result.getProducts()) {
+                productRepository.getById(pic.getProduct().getId()).getProductsInCarts().remove(pic);
+                productInCartRepository.delete(pic);
+            }
+            cartRepository.findByBuyer(ident).getProducts().clear();
+        }
+        if(result.getProductsInPromo().size() > 0) {
+            for (ProductInPromoInCart pipic : result.getProductsInPromo()) {
+                productInPromoRepository.getById(pipic.getProductInPromo().getId()).getProductsInPromoInCarts().remove(pipic);
+                productInPromoInCartRepository.delete(pipic);
+            }
+            cartRepository.findByBuyer(ident).getProductsInPromo().clear();
+        }
+        return result;
+    }//clear
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public void delete(int id){
         cartRepository.delete(cartRepository.findByBuyer(id));
     }//delete
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Cart addProduct(Product product,int quantity, String id) throws ProductNotFoundException{
-        if(productRepository.existsById(product.getId())){
-            int ident = Integer.parseInt(id);
+    public Cart addProduct(String id, int idC, int quantity) throws ProductNotFoundException{
+        int ident = Integer.parseInt(id);
+        if(productInCartRepository.existsByProduct(ident)){
+            ProductInCart productInCart = productInCartRepository.getById(ident);
+            productInCart.setQuantity(productInCart.getQuantity() + quantity);
+            return cartRepository.getById(idC);
+        }
+        else if(productRepository.existsById(ident)){
+            Product product = productRepository.getById(ident);
             ProductInCart pic = new ProductInCart();
-            pic.setCart(cartRepository.findByBuyer(ident));
+            pic.setCart(cartRepository.getById(idC));
             pic.setQuantity(quantity);
             pic.setProduct(product);
             ProductInCart justAdded = productInCartRepository.save(pic);
-            Cart result = cartRepository.findByBuyer(ident);
+            Cart result = cartRepository.getById(idC);
             result.getProducts().add(justAdded);
             productRepository.getById(product.getId()).getProductsInCarts().add(justAdded);
             return result;
@@ -58,15 +87,21 @@ public class CartService {
     }//addProduct
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Cart addProductInPromo(ProductInPromo productInPromo, int quantity, String id) throws ProductInPromoNotFoundException {
-        if(productInPromoRepository.existsById(productInPromo.getId())){
-            int ident = Integer.parseInt(id);
+    public Cart addProductInPromo(String id, int idC, int quantity) throws ProductInPromoNotFoundException {
+        int ident = Integer.parseInt(id);
+        if(productInPromoInCartRepository.existsByProductInPromo(ident)){
+            ProductInPromoInCart productInPromoInCart = productInPromoInCartRepository.getById(ident);
+            productInPromoInCart.setQuantity(productInPromoInCart.getQuantity() + quantity);
+            return cartRepository.getById(idC);
+        }
+        if(productInPromoRepository.existsById(ident)){
+            ProductInPromo productInPromo = productInPromoRepository.getById(ident);
             ProductInPromoInCart pipic = new ProductInPromoInCart();
-            pipic.setCart(cartRepository.findByBuyer(ident));
+            pipic.setCart(cartRepository.getById(idC));
             pipic.setQuantity(quantity);
             pipic.setProductInPromo(productInPromo);
             ProductInPromoInCart justAdded = productInPromoInCartRepository.save(pipic);
-            Cart result = cartRepository.findByBuyer(ident);
+            Cart result = cartRepository.getById(idC);
             result.getProductsInPromo().add(justAdded);
             productInPromoRepository.getById(productInPromo.getId()).getProductsInPromoInCarts().add(justAdded);
             return result;
@@ -108,5 +143,37 @@ public class CartService {
         int ident = Integer.parseInt(id);
         return cartRepository.findByBuyer(ident);
     }//getCart
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public Cart updateProductQuantity(String id, int idP, int quantity) throws ProductInCartNotFoundException {
+        int ident = Integer.parseInt(id);
+        if(productInCartRepository.existsById(idP)){
+            Cart cart = cartRepository.findByBuyer(ident);
+            if(cart.getProducts().contains(productInCartRepository.getById(idP))){
+                productInCartRepository.getById(idP).setQuantity(productInCartRepository.getById(idP).getQuantity()+quantity);
+                return cart;
+            } else {
+                throw new ProductInCartNotFoundException();
+            }
+        } else {
+            throw new ProductInCartNotFoundException();
+        }
+    }//updateProductQuantity
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public Cart updateProductInPromoQuantity(String id, int idPip, int quantity) throws ProductInPromoInCartNotFoundException {
+        int ident = Integer.parseInt(id);
+        if(productInPromoInCartRepository.existsById(idPip)){
+            Cart cart = cartRepository.findByBuyer(ident);
+            if(cart.getProducts().contains(productInPromoInCartRepository.getById(idPip))){
+                productInPromoInCartRepository.getById(idPip).setQuantity(productInPromoInCartRepository.getById(idPip).getQuantity()+quantity);
+                return cart;
+            } else {
+                throw new ProductInPromoInCartNotFoundException();
+            }
+        } else {
+            throw new ProductInPromoInCartNotFoundException();
+        }
+    }//updateProductQuantity
 
 }//CartService

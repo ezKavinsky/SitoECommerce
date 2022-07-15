@@ -1,6 +1,7 @@
 package progettopsw.sitoecommerce.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.ToString;
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "product", schema = "orders")
 public class Product {
@@ -68,7 +70,7 @@ public class Product {
     @OneToMany(targetEntity = ProductInCart.class, mappedBy = "product", cascade = CascadeType.MERGE)
     @JsonIgnore
     @ToString.Exclude
-    private List<ProductInCart> productsInCarts;
+    private List<ProductInCart> productsInCarts = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(targetEntity = Review.class, mappedBy = "product", cascade = CascadeType.MERGE)

@@ -1,17 +1,19 @@
 package progettopsw.sitoecommerce.controllers;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import progettopsw.sitoecommerce.entities.Cart;
 import progettopsw.sitoecommerce.entities.Product;
+import progettopsw.sitoecommerce.services.CartService;
 import progettopsw.sitoecommerce.services.ProductService;
 import progettopsw.sitoecommerce.support.ResponseMessage;
 import progettopsw.sitoecommerce.support.exceptions.BarCodeAlreadyExistException;
 import progettopsw.sitoecommerce.support.exceptions.ProductNotFoundException;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,6 +21,8 @@ import java.util.List;
 public class ProductsController {
     @Autowired
     private ProductService productService;
+    @Autowired
+    private CartService cartService;
 
     @PostMapping
     public ResponseEntity create(@RequestBody @Valid Product product) {
@@ -34,6 +38,18 @@ public class ProductsController {
     public void delete(@PathVariable String id){
         productService.removeProduct(id);
     }//delete
+
+    @PostMapping("/{id}/cart")
+    public ResponseEntity addInCart(@PathVariable String id, @RequestBody ObjectNode objectNode){
+        int idC = objectNode.get("id").asInt();
+        int quantity = objectNode.get("quantity").asInt();
+        try{
+            Cart result = cartService.addProduct(id,idC,quantity);
+            return new ResponseEntity(result, HttpStatus.OK);
+        } catch (ProductNotFoundException e) {
+            return new ResponseEntity(new ResponseMessage("ERROR_PRODUCT_NOT_FOUND"), HttpStatus.NOT_FOUND);
+        }
+    }//addInCart
 
     @PutMapping("/{id}/updateName")
     public ResponseEntity updateName(@RequestBody String name, @PathVariable String id){

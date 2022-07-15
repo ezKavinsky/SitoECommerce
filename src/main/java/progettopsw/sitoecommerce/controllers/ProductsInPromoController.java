@@ -1,15 +1,19 @@
 package progettopsw.sitoecommerce.controllers;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import progettopsw.sitoecommerce.entities.Cart;
 import progettopsw.sitoecommerce.entities.Product;
 import progettopsw.sitoecommerce.entities.ProductInPromo;
 import progettopsw.sitoecommerce.entities.Promo;
+import progettopsw.sitoecommerce.services.CartService;
 import progettopsw.sitoecommerce.services.ProductInPromoService;
 import progettopsw.sitoecommerce.support.ResponseMessage;
 import progettopsw.sitoecommerce.support.exceptions.ProductAlreadyInThisPromoException;
+import progettopsw.sitoecommerce.support.exceptions.ProductInPromoNotFoundException;
 import progettopsw.sitoecommerce.support.exceptions.ProductNotFoundException;
 import progettopsw.sitoecommerce.support.exceptions.PromoNotFoundException;
 
@@ -23,6 +27,8 @@ import java.util.List;
 public class ProductsInPromoController {
     @Autowired
     private ProductInPromoService productInPromoService;
+    @Autowired
+    private CartService cartService;
 
     @PostMapping
     public ResponseEntity add(@RequestBody @Valid Product product, @PathVariable String id){
@@ -42,6 +48,18 @@ public class ProductsInPromoController {
     public void remove(@PathVariable String id2){
         productInPromoService.removeProductFromPromo(id2);
     }//remove
+
+    @PostMapping("/{id2}/cart")
+    public ResponseEntity addProductInCart(@PathVariable String id2, @RequestBody ObjectNode objectNode){
+        int idC = objectNode.get("id").asInt();
+        int quantity = objectNode.get("quantity").asInt();
+        try{
+            Cart result = cartService.addProductInPromo(id2, idC, quantity);
+            return new ResponseEntity(result, HttpStatus.OK);
+        } catch(ProductInPromoNotFoundException e){
+            return new ResponseEntity(new ResponseMessage("ERROR_PRODUCT_IN_PROMO_NOT_FOUND"), HttpStatus.BAD_REQUEST);
+        }
+    }//addProduct
 
     @GetMapping("/paged")
     public ResponseEntity getAllPaged(@RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,

@@ -7,5 +7,6 @@ import progettopsw.sitoecommerce.entities.ProductInPromoInCart;
 @Repository
 public interface ProductInPromoInCartRepository extends JpaRepository<ProductInPromoInCart, Integer> {
 
+    boolean existsByProductInPromo(int id);
 
 }//ProductInPromoInCart
