@@ -19,10 +19,10 @@ public class Cart {
     @JsonIgnore
     private User buyer;
 
-    @OneToMany(targetEntity = Product.class, cascade = CascadeType.MERGE, mappedBy = "cart")
+    @OneToMany(targetEntity = ProductInCart.class, cascade = CascadeType.MERGE, mappedBy = "cart")
     private List<ProductInCart> products = new ArrayList<>();
 
-    @OneToMany(targetEntity = ProductInPromo.class, cascade = CascadeType.MERGE, mappedBy = "cart")
+    @OneToMany(targetEntity = ProductInPromoInCart.class, cascade = CascadeType.MERGE, mappedBy = "cart")
     private List<ProductInPromoInCart> productsInPromo = new ArrayList<>();
 
     @Basic
