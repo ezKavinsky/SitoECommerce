@@ -60,6 +60,7 @@ public class Product {
 
     @Basic
     @Column(name = "version", nullable = false)
+    @JsonIgnore
     private long version;
 
     @OneToMany(targetEntity = ProductInPurchase.class, mappedBy = "product", cascade = CascadeType.MERGE)
@@ -74,6 +75,6 @@ public class Product {
 
     @JsonIgnore
     @OneToMany(targetEntity = Review.class, mappedBy = "product", cascade = CascadeType.MERGE)
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
 
 }//Product

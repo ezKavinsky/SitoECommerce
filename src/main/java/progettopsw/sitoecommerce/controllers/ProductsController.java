@@ -7,11 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import progettopsw.sitoecommerce.entities.Cart;
 import progettopsw.sitoecommerce.entities.Product;
+import progettopsw.sitoecommerce.entities.Review;
 import progettopsw.sitoecommerce.services.CartService;
 import progettopsw.sitoecommerce.services.ProductService;
+import progettopsw.sitoecommerce.services.ReviewService;
 import progettopsw.sitoecommerce.support.ResponseMessage;
 import progettopsw.sitoecommerce.support.exceptions.BarCodeAlreadyExistException;
 import progettopsw.sitoecommerce.support.exceptions.ProductNotFoundException;
+import progettopsw.sitoecommerce.support.exceptions.ReviewAlreadyExistsException;
+import progettopsw.sitoecommerce.support.exceptions.UserNotFoundException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -23,6 +27,8 @@ public class ProductsController {
     private ProductService productService;
     @Autowired
     private CartService cartService;
+    @Autowired
+    private ReviewService reviewService;
 
     @PostMapping
     public ResponseEntity create(@RequestBody @Valid Product product) {
@@ -215,6 +221,24 @@ public class ProductsController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @PostMapping("{id}/reviews")
+    public ResponseEntity create(@PathVariable String id, @Valid @RequestBody Review review){
+        try{
+            review.setProduct(productService.getProduct(id));
+            Review result = reviewService.addReview(review);
+            return new ResponseEntity(result, HttpStatus.CREATED);
+        }catch(UserNotFoundException e){
+            return new ResponseEntity(new ResponseMessage("ERROR_USER_NOT_FOUND"), HttpStatus.BAD_REQUEST);
+        }catch(ProductNotFoundException e){
+            return new ResponseEntity(new ResponseMessage("ERROR_PRODUCT_NOT_FOUND"), HttpStatus.BAD_REQUEST);
+        }catch(ReviewAlreadyExistsException e){
+            return new ResponseEntity(new ResponseMessage("ERROR_REVIEW_ALREADY_EXISTS"), HttpStatus.BAD_REQUEST);
+        }
+    }//create
 
+    @GetMapping("{id}/reviews")
+    public List<Review> getAll(@PathVariable String id){
+        return reviewService.getAll(id);
+    }//getAll
 
 }//ProductsController

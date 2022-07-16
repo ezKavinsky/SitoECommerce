@@ -1,12 +1,14 @@
 package progettopsw.sitoecommerce.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.ToString;
 import javax.persistence.*;
 
 @Data
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "product_in_purchase", schema = "orders")
 public class ProductInPurchase {
     @Id

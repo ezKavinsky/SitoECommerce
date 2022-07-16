@@ -1,11 +1,12 @@
 package progettopsw.sitoecommerce.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import javax.persistence.*;
-import java.util.Date;
 
 @Data
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "review", schema = "orders")
 public class Review {
     @Id

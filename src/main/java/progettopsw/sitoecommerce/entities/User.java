@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
@@ -63,7 +64,7 @@ public class User {
     @OneToMany(targetEntity = Review.class, mappedBy = "buyer", cascade = CascadeType.MERGE)
     @JsonIgnore
     @ToString.Exclude
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(targetEntity = CreditCard.class, mappedBy = "owner", cascade = CascadeType.MERGE)
     @JsonIgnore
@@ -71,7 +72,7 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id")
-    //@JsonIgnore
+    @JsonIgnore
     private Cart cart;
 
 }//User
