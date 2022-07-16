@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,10 +34,10 @@ public class Purchase {
     private CreditCard creditCard;
 
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.MERGE)
-    private List<ProductInPurchase> productsInPurchase;
+    private List<ProductInPurchase> productsInPurchase = new ArrayList<>();
 
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.MERGE)
-    private List<ProductInPromoPurchase> productsInPromoPurchase;
+    private List<ProductInPromoPurchase> productsInPromoPurchase = new ArrayList<>();
 
     @Basic
     @JoinColumn(name = "total")

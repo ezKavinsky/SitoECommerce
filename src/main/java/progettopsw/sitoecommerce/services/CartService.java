@@ -65,22 +65,22 @@ public class CartService {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public Cart addProduct(String id, int idC, int quantity) throws ProductNotFoundException{
         int ident = Integer.parseInt(id);
-        if(productInCartRepository.existsByProduct(ident)){
-            ProductInCart productInCart = productInCartRepository.getById(ident);
+        Cart cart = cartRepository.getById(idC);
+        Product product = productRepository.getById(ident);
+        if(productInCartRepository.existsByProductAndCart(product, cart)){
+            ProductInCart productInCart = productInCartRepository.findByProductAndCart(product, cart);
             productInCart.setQuantity(productInCart.getQuantity() + quantity);
             return cartRepository.getById(idC);
         }
         else if(productRepository.existsById(ident)){
-            Product product = productRepository.getById(ident);
             ProductInCart pic = new ProductInCart();
-            pic.setCart(cartRepository.getById(idC));
+            pic.setCart(cart);
             pic.setQuantity(quantity);
             pic.setProduct(product);
             ProductInCart justAdded = productInCartRepository.save(pic);
-            Cart result = cartRepository.getById(idC);
-            result.getProducts().add(justAdded);
+            cart.getProducts().add(justAdded);
             productRepository.getById(product.getId()).getProductsInCarts().add(justAdded);
-            return result;
+            return cart;
         } else {
             throw new ProductNotFoundException();
         }
@@ -89,12 +89,14 @@ public class CartService {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public Cart addProductInPromo(String id, int idC, int quantity) throws ProductInPromoNotFoundException {
         int ident = Integer.parseInt(id);
-        if(productInPromoInCartRepository.existsByProductInPromo(ident)){
-            ProductInPromoInCart productInPromoInCart = productInPromoInCartRepository.getById(ident);
+        Cart cart = cartRepository.getById(idC);
+        ProductInPromo pip = productInPromoRepository.getById(ident);
+        if(productInPromoInCartRepository.existsByProductInPromoAndCart(pip, cart)){
+            ProductInPromoInCart productInPromoInCart = productInPromoInCartRepository.findByProductInPromoAndCart(pip, cart);
             productInPromoInCart.setQuantity(productInPromoInCart.getQuantity() + quantity);
             return cartRepository.getById(idC);
         }
-        if(productInPromoRepository.existsById(ident)){
+        else if(productInPromoRepository.existsById(ident)){
             ProductInPromo productInPromo = productInPromoRepository.getById(ident);
             ProductInPromoInCart pipic = new ProductInPromoInCart();
             pipic.setCart(cartRepository.getById(idC));
@@ -111,17 +113,21 @@ public class CartService {
     }//addProductInPromo
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void removeProduct(String id, ProductInCart productInCart){
-        int ident = Integer.parseInt(id);
-        cartRepository.findByBuyer(ident).getProducts().remove(productInCart);
+    public void removeProduct(String id1, String id2){
+        int ident1 = Integer.parseInt(id1);
+        int ident2 = Integer.parseInt(id2);
+        ProductInCart productInCart = productInCartRepository.getById(ident2);
+        cartRepository.findByBuyer(ident1).getProducts().remove(productInCart);
         productRepository.getById(productInCart.getProduct().getId()).getProductsInCarts().remove(productInCart);
         productInCartRepository.delete(productInCart);
     }//removeProduct
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void removeProductInPromo(String id, ProductInPromoInCart productInPromoInCart){
-        int ident = Integer.parseInt(id);
-        cartRepository.findByBuyer(ident).getProductsInPromo().remove(productInPromoInCart);
+    public void removeProductInPromo(String id1, String id2){
+        int ident1 = Integer.parseInt(id1);
+        int ident2 = Integer.parseInt(id2);
+        ProductInPromoInCart productInPromoInCart = productInPromoInCartRepository.getById(ident2);
+        cartRepository.findByBuyer(ident1).getProductsInPromo().remove(productInPromoInCart);
         productInPromoRepository.getById(productInPromoInCart.getProductInPromo().getId()).getProductsInPromoInCarts().remove(productInPromoInCart);
         productInPromoInCartRepository.delete(productInPromoInCart);
     }//removeProduct
@@ -147,10 +153,12 @@ public class CartService {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public Cart updateProductQuantity(String id, int idP, int quantity) throws ProductInCartNotFoundException {
         int ident = Integer.parseInt(id);
-        if(productInCartRepository.existsById(idP)){
-            Cart cart = cartRepository.findByBuyer(ident);
-            if(cart.getProducts().contains(productInCartRepository.getById(idP))){
-                productInCartRepository.getById(idP).setQuantity(productInCartRepository.getById(idP).getQuantity()+quantity);
+        Product p = productRepository.getById(idP);
+        Cart cart = cartRepository.findByBuyer(ident);
+        if(productInCartRepository.existsByProductAndCart(p, cart)){
+            if(cart.getProducts().contains(productInCartRepository.findByProductAndCart(p, cart))){
+                productInCartRepository.findByProductAndCart(p, cart)
+                        .setQuantity(productInCartRepository.findByProductAndCart(p, cart).getQuantity()+quantity);
                 return cart;
             } else {
                 throw new ProductInCartNotFoundException();
@@ -163,10 +171,12 @@ public class CartService {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public Cart updateProductInPromoQuantity(String id, int idPip, int quantity) throws ProductInPromoInCartNotFoundException {
         int ident = Integer.parseInt(id);
-        if(productInPromoInCartRepository.existsById(idPip)){
-            Cart cart = cartRepository.findByBuyer(ident);
-            if(cart.getProducts().contains(productInPromoInCartRepository.getById(idPip))){
-                productInPromoInCartRepository.getById(idPip).setQuantity(productInPromoInCartRepository.getById(idPip).getQuantity()+quantity);
+        ProductInPromo pip = productInPromoRepository.getById(idPip);
+        Cart cart = cartRepository.findByBuyer(ident);
+        if(productInPromoInCartRepository.existsByProductInPromoAndCart(pip, cart)){
+            if(cart.getProductsInPromo().contains(productInPromoInCartRepository.findByProductInPromoAndCart(pip, cart))){
+                productInPromoInCartRepository.findByProductInPromoAndCart(pip, cart)
+                        .setQuantity(productInPromoInCartRepository.findByProductInPromoAndCart(pip, cart).getQuantity()+quantity);
                 return cart;
             } else {
                 throw new ProductInPromoInCartNotFoundException();

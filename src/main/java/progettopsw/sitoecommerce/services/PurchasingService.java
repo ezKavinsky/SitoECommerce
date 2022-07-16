@@ -27,11 +27,14 @@ public class PurchasingService {
     private EntityManager entityManager;
     @Autowired
     private ProductInPromoPurchaseRepository productInPromoPurchaseRepository;
+    @Autowired
+    private CartRepository cartRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Purchase addPurchase(Cart cart, String id)
+    public Purchase addPurchase(String id)
             throws QuantityProductUnavailableException, CreditCardNotFoundException {
         int ident = Integer.parseInt(id);
+        Cart cart = cartRepository.findByBuyer(ident);
         Purchase p = new Purchase();
         p.setPurchaseTime(Date.from(Instant.now()));
         p.setShipped(false);
@@ -45,17 +48,18 @@ public class PurchasingService {
             ProductInPromoPurchase justAdded = productInPromoPurchaseRepository.save(pipp);
             justAdded.setFinalPrice(justAdded.getProductInPromo().getDiscountPrice()*justAdded.getQuantity());
             total += justAdded.getFinalPrice();
-            entityManager.refresh(justAdded);
+            entityManager.merge(justAdded);
             Product product = justAdded.getProductInPromo().getProduct();
             int newQuantity = justAdded.getQuantity() - pipp.getQuantity();
             if(newQuantity < 0){
                 throw new QuantityProductUnavailableException();
             }
+            result.getProductsInPromoPurchase().add(pipp);
             product.setQuantity(newQuantity);
-            entityManager.refresh(pipp);
-            cart.getProductsInPromo().clear();
+            entityManager.merge(pipp);
         }
-        entityManager.refresh(result);
+        cart.getProductsInPromo().clear();
+        entityManager.merge(result);
         for(ProductInCart pic : cart.getProducts()){
             ProductInPurchase pip = new ProductInPurchase();
             pip.setProduct(pic.getProduct());
@@ -64,21 +68,22 @@ public class PurchasingService {
             ProductInPurchase justAdded = productInPurchaseRepository.save(pip);
             justAdded.setFinalPrice((justAdded.getProduct().getPrice()*justAdded.getQuantity())+justAdded.getProduct().getShippingPrice());
             total += justAdded.getFinalPrice();
-            entityManager.refresh(justAdded); //l'entityManager ripreleva il prodotto a cui adesso è stato assegnato l'id numerico ed ha tutti i campi aggiornati
+            entityManager.merge(justAdded); //l'entityManager ripreleva il prodotto a cui adesso è stato assegnato l'id numerico ed ha tutti i campi aggiornati
             Product product = justAdded.getProduct();
             int newQuantity = justAdded.getQuantity() - pip.getQuantity();
             if (newQuantity < 0) {
                 throw new QuantityProductUnavailableException();
             }
             product.setQuantity(newQuantity);
-            entityManager.refresh(pip);
-            cart.getProducts().clear();
+            result.getProductsInPurchase().add(pip);
+            entityManager.merge(pip);
         }
+        cart.getProducts().clear();
         result.setTotal(total);
-        result.setBuyer(userRepository.getById(ident));
-        result.setCreditCard(userRepository.getById(ident).getCreditCards().get(1));
+        result.setBuyer(cart.getBuyer());
+        result.setCreditCard(userRepository.getById(ident).getCreditCards().get(0));
         userRepository.getById(ident).getPurchases().add(result);
-        entityManager.refresh(result);
+        entityManager.merge(result);
         return result;
     }//addPurchase
 
@@ -90,12 +95,12 @@ public class PurchasingService {
             for(ProductInPurchase pip : purchase.getProductsInPurchase()){
                 Product product = pip.getProduct();
                 product.setQuantity(product.getQuantity()+pip.getQuantity());
-                entityManager.refresh(product);
+                entityManager.merge(product);
                 productInPurchaseRepository.delete(pip);
             }
             for(ProductInPromoPurchase pipp : purchase.getProductsInPromoPurchase()){
                 Product product = pipp.getProductInPromo().getProduct();
-                entityManager.refresh(product);
+                entityManager.merge(product);
                 product.setQuantity(product.getQuantity()+pipp.getQuantity());
                 productInPromoPurchaseRepository.delete(pipp);
             }
@@ -147,5 +152,11 @@ public class PurchasingService {
         int ident = Integer.parseInt(id);
         return purchaseRepository.getById(ident);
     }//getPurchase
+
+    @Transactional(readOnly = false)
+    public void setShipped(String id){
+        int ident = Integer.parseInt(id);
+        purchaseRepository.getById(ident).setShipped(true);
+    }//setShipped
 
 }//PurchasingService

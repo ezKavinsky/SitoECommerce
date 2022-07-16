@@ -10,8 +10,6 @@ import progettopsw.sitoecommerce.services.CartService;
 import progettopsw.sitoecommerce.support.ResponseMessage;
 import progettopsw.sitoecommerce.support.exceptions.*;
 import progettopsw.sitoecommerce.services.AccountingService;
-
-import javax.persistence.EntityManager;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
@@ -23,8 +21,6 @@ public class AccountingController {
     private AccountingService accountingService;
     @Autowired
     private CartService cartService;
-    @Autowired
-    private EntityManager entityManager;
 
     @PostMapping
     public ResponseEntity create(@RequestBody @Valid User user){
