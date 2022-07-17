@@ -50,7 +50,7 @@ public class PurchasingService {
             total += justAdded.getFinalPrice();
             entityManager.merge(justAdded);
             Product product = justAdded.getProductInPromo().getProduct();
-            int newQuantity = justAdded.getQuantity() - pipp.getQuantity();
+            int newQuantity = product.getQuantity() - pipp.getQuantity();
             if(newQuantity < 0){
                 throw new QuantityProductUnavailableException();
             }
@@ -70,7 +70,7 @@ public class PurchasingService {
             total += justAdded.getFinalPrice();
             entityManager.merge(justAdded); //l'entityManager ripreleva il prodotto a cui adesso è stato assegnato l'id numerico ed ha tutti i campi aggiornati
             Product product = justAdded.getProduct();
-            int newQuantity = justAdded.getQuantity() - pip.getQuantity();
+            int newQuantity = product.getQuantity() - pip.getQuantity();
             if (newQuantity < 0) {
                 throw new QuantityProductUnavailableException();
             }

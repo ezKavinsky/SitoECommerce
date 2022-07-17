@@ -70,7 +70,8 @@ public class CartService {
         if(productInCartRepository.existsByProductAndCart(product, cart)){
             ProductInCart productInCart = productInCartRepository.findByProductAndCart(product, cart);
             productInCart.setQuantity(productInCart.getQuantity() + quantity);
-            return cartRepository.getById(idC);
+            cart.setTotal(cart.getTotal()+ product.getPrice()*quantity);
+            return cart;
         }
         else if(productRepository.existsById(ident)){
             ProductInCart pic = new ProductInCart();
@@ -80,6 +81,7 @@ public class CartService {
             ProductInCart justAdded = productInCartRepository.save(pic);
             cart.getProducts().add(justAdded);
             productRepository.getById(product.getId()).getProductsInCarts().add(justAdded);
+            cart.setTotal(cart.getTotal()+ product.getPrice()*quantity);
             return cart;
         } else {
             throw new ProductNotFoundException();
@@ -94,7 +96,8 @@ public class CartService {
         if(productInPromoInCartRepository.existsByProductInPromoAndCart(pip, cart)){
             ProductInPromoInCart productInPromoInCart = productInPromoInCartRepository.findByProductInPromoAndCart(pip, cart);
             productInPromoInCart.setQuantity(productInPromoInCart.getQuantity() + quantity);
-            return cartRepository.getById(idC);
+            cart.setTotal(cart.getTotal()+ pip.getDiscountPrice()*quantity);
+            return cart;
         }
         else if(productInPromoRepository.existsById(ident)){
             ProductInPromo productInPromo = productInPromoRepository.getById(ident);
@@ -106,7 +109,8 @@ public class CartService {
             Cart result = cartRepository.getById(idC);
             result.getProductsInPromo().add(justAdded);
             productInPromoRepository.getById(productInPromo.getId()).getProductsInPromoInCarts().add(justAdded);
-            return result;
+            cart.setTotal(cart.getTotal()+ pip.getDiscountPrice()*quantity);
+            return cart;
         } else {
             throw new ProductInPromoNotFoundException();
         }
@@ -117,7 +121,9 @@ public class CartService {
         int ident1 = Integer.parseInt(id1);
         int ident2 = Integer.parseInt(id2);
         ProductInCart productInCart = productInCartRepository.getById(ident2);
-        cartRepository.findByBuyer(ident1).getProducts().remove(productInCart);
+        Cart cart = cartRepository.findByBuyer(ident1);
+        cart.setTotal(cart.getTotal()-(productInCart.getQuantity()*productInCart.getProduct().getPrice()));
+        cart.getProducts().remove(productInCart);
         productRepository.getById(productInCart.getProduct().getId()).getProductsInCarts().remove(productInCart);
         productInCartRepository.delete(productInCart);
     }//removeProduct
@@ -127,7 +133,9 @@ public class CartService {
         int ident1 = Integer.parseInt(id1);
         int ident2 = Integer.parseInt(id2);
         ProductInPromoInCart productInPromoInCart = productInPromoInCartRepository.getById(ident2);
-        cartRepository.findByBuyer(ident1).getProductsInPromo().remove(productInPromoInCart);
+        Cart cart = cartRepository.findByBuyer(ident1);
+        cart.setTotal(cart.getTotal()-(productInPromoInCart.getQuantity()*productInPromoInCart.getProductInPromo().getDiscountPrice()));
+        cart.getProductsInPromo().remove(productInPromoInCart);
         productInPromoRepository.getById(productInPromoInCart.getProductInPromo().getId()).getProductsInPromoInCarts().remove(productInPromoInCart);
         productInPromoInCartRepository.delete(productInPromoInCart);
     }//removeProduct

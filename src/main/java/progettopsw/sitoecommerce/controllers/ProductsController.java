@@ -174,7 +174,7 @@ public class ProductsController {
     }//getAll
 
     @GetMapping("/advancedSearch")
-    public List<Product> getByAdvancedSearch(@RequestParam(value = "name", defaultValue = "prodotto") String name,
+    public List<Product> getByAdvancedSearch(@RequestParam(value = "name", defaultValue = "product") String name,
                                              @RequestParam(value = "brand", defaultValue = "brand") String brand,
                                              @RequestParam(value = "lowPrice", defaultValue = "0.0") float lowPrice,
                                              @RequestParam(value = "highPrice", defaultValue = "5000.0") float highPrice,
@@ -190,7 +190,7 @@ public class ProductsController {
     public ResponseEntity getByAdvancedPagedSearch(@RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
                                                    @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
                                                    @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
-                                                   @RequestParam(value = "name", defaultValue = "prodotto") String name,
+                                                   @RequestParam(value = "name", defaultValue = "product") String name,
                                                    @RequestParam(value = "brand", defaultValue = "brand") String brand,
                                                    @RequestParam(value = "lowPrice", defaultValue = "0") float lowPrice,
                                                    @RequestParam(value = "highPrice", defaultValue = "5000") float highPrice,
