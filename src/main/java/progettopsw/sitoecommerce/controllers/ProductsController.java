@@ -213,7 +213,7 @@ public class ProductsController {
     }//getProduct
 
     @GetMapping("/search/by_name")
-    public ResponseEntity getByName(@RequestParam(required = false) String name) {
+    public ResponseEntity getByName(@RequestParam String name) {
         List<Product> result = productService.showProductsByName(name);
         if ( result.size() <= 0 ) {
             return new ResponseEntity<>(new ResponseMessage("No results!"), HttpStatus.OK);

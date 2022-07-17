@@ -221,7 +221,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public List<Product> showProductsByName(String name) {
-        return productRepository.findByNameContaining(name);
+        return productRepository.findByName(name);
     }
 
 }//ProductService
