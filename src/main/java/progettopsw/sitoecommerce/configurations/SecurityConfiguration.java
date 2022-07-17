@@ -25,6 +25,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
                 .antMatchers("/products/**").permitAll()
                 .antMatchers("/productsInPromo/**").permitAll()
                 .antMatchers("/promos/**").permitAll()
+                .antMatchers("/users").permitAll()
                 .anyRequest().authenticated().and().oauth2ResourceServer().jwt().jwtAuthenticationConverter(new JwtAuthenticationConverter());
     }//configure
     

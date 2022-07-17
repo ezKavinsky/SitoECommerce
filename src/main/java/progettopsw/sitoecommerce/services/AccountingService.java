@@ -10,6 +10,7 @@ import progettopsw.sitoecommerce.support.exceptions.MailUserAlreadyExistsExcepti
 import progettopsw.sitoecommerce.repositories.UserRepository;
 import progettopsw.sitoecommerce.support.exceptions.UserNotFoundException;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class AccountingService {
         } else if(userRepository.existsByCode(user.getCode())){
             throw new CodeUserAlreadyExistsException();
         }
+        user.setRegistrationDate(Date.from(Instant.now()));
         return userRepository.save(user);
     }//registerUser
 
