@@ -127,4 +127,9 @@ public class AccountingController {
         return accountingService.showUsersByAddress(address);
     }//getByAdvancedSearch
 
+    @GetMapping("/getByEmail")
+    public User getByEmail(@PathVariable String email){
+        return accountingService.showUserByEmail(email);
+    }
+
 }//AccountingController

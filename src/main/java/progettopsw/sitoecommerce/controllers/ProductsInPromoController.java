@@ -77,7 +77,7 @@ public class ProductsInPromoController {
         }
     }//getAllPaged
 
-    @GetMapping()
+    @GetMapping
     public List<ProductInPromo> getByPromo(@PathVariable String id){
         return productInPromoService.showProductsInPromo(id);
     }//getByAdvancedSearch
