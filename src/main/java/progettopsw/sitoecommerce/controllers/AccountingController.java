@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import progettopsw.sitoecommerce.entities.Cart;
+import progettopsw.sitoecommerce.entities.Review;
 import progettopsw.sitoecommerce.entities.User;
 import progettopsw.sitoecommerce.services.CartService;
 import progettopsw.sitoecommerce.support.ResponseMessage;
@@ -128,8 +129,14 @@ public class AccountingController {
     }//getByAdvancedSearch
 
     @GetMapping("/getByEmail")
-    public User getByEmail(@PathVariable String email){
+    public User getByEmail(@RequestParam String email){
         return accountingService.showUserByEmail(email);
     }
+
+    @GetMapping("/reviews")
+    public List<Review> getReviews(@PathVariable String id) {
+        return accountingService.getReviews(id);
+    }
+
 
 }//AccountingController

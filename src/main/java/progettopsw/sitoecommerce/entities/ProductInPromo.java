@@ -20,7 +20,6 @@ public class ProductInPromo {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "related_promo")
-    @JsonIgnore
     private Promo promo;
 
     @ManyToOne

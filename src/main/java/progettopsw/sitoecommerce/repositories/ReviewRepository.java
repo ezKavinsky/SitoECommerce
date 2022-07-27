@@ -18,5 +18,8 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
     @Query("select r from Review r where r.product.id = ?1")
     List<Review> getAllByProduct(int id);
 
+    @Query("select r from Review r where r.buyer.id = ?1")
+    List<Review> getByUser(int id);
+
     boolean existsByProductAndBuyer(Product product, User buyer);
 }//ReviewRepository

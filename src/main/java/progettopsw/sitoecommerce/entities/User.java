@@ -3,7 +3,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
-import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.ArrayList;
@@ -63,7 +62,6 @@ public class User {
 
     @OneToMany(targetEntity = Review.class, mappedBy = "buyer", cascade = CascadeType.MERGE)
     @JsonIgnore
-    @ToString.Exclude
     private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(targetEntity = CreditCard.class, mappedBy = "owner", cascade = CascadeType.MERGE)
@@ -72,7 +70,6 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id")
-    @JsonIgnore
     private Cart cart;
 
 }//User

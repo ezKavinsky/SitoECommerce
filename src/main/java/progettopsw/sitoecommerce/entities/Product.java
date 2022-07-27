@@ -64,17 +64,17 @@ public class Product {
     private long version;
 
     @OneToMany(targetEntity = ProductInPurchase.class, mappedBy = "product", cascade = CascadeType.MERGE)
-    @JsonIgnore
     @ToString.Exclude
-    private List<ProductInPurchase> productsInPurchase;
+    @JsonIgnore
+    private List<ProductInPurchase> productsInPurchase = new ArrayList<>();
 
     @OneToMany(targetEntity = ProductInCart.class, mappedBy = "product", cascade = CascadeType.MERGE)
-    @JsonIgnore
     @ToString.Exclude
+    @JsonIgnore
     private List<ProductInCart> productsInCarts = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(targetEntity = Review.class, mappedBy = "product", cascade = CascadeType.MERGE)
+    @JsonIgnore
     private List<Review> reviews = new ArrayList<>();
 
 }//Product

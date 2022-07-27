@@ -4,7 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import progettopsw.sitoecommerce.entities.Cart;
+import progettopsw.sitoecommerce.entities.Review;
 import progettopsw.sitoecommerce.entities.User;
+import progettopsw.sitoecommerce.repositories.CartRepository;
+import progettopsw.sitoecommerce.repositories.ReviewRepository;
 import progettopsw.sitoecommerce.support.exceptions.CodeUserAlreadyExistsException;
 import progettopsw.sitoecommerce.support.exceptions.MailUserAlreadyExistsException;
 import progettopsw.sitoecommerce.repositories.UserRepository;
@@ -18,6 +22,10 @@ import java.util.List;
 public class AccountingService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ReviewRepository reviewRepository;
+    @Autowired
+    private CartRepository cartRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public User registerUser(User user) throws MailUserAlreadyExistsException, CodeUserAlreadyExistsException {
@@ -155,6 +163,16 @@ public class AccountingService {
         return userRepository.findByAddress(address);
     }//showUsersByAdvancedSearch
 
+    @Transactional(readOnly = true)
+    public List<Review> getReviews(String id){
+        int ident = Integer.parseInt(id);
+        return reviewRepository.getByUser(ident);
+    }//getReviews
 
+    @Transactional(readOnly = true)
+    public Cart getCart(String id){
+        int ident = Integer.parseInt(id);
+        return cartRepository.getById(ident);
+    }//getCart
 
 }//AccountingService
